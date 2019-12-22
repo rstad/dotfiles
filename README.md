@@ -26,6 +26,11 @@ I don't have any idea how you might make these useful for yourself, but, when I 
   * [tmux-resurrect](https://github.com/tmux-plugins/tmux-resurrect)
   * [tmux-continuum](https://github.com/tmux-plugins/tmux-continuum)
   * [tmux-slack-counter](https://github.com/x4121/tmux-slack-counter)
+* fix up
+  * the alacritty config really only ever needs to be on my mac, so why am I putting it anywhere else?
+* cleanup / include
+  * weechat
+  * .[ba/z/fi]shrc if ever I actually put anything in them, and get everything to use the same shell.
 
 
 ## Resources
