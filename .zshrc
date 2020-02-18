@@ -33,6 +33,19 @@ if [[ ! -a ~/bin/nao ]]; then
     chmod +x ~/bin/nao
 fi
 
+# this is probably reckless?  but basically trying to ensure p10k is installed
+if [ ! -d ~/powerlevel10k ]
+then
+ git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/powerlevel10k
+else
+  if [ ! -f ~/.p10k-daily-$(date +%Y%m%d) ]; then
+    rm -f ~/.p10k-daily-*
+    cd ~/powerlevel10k
+    git pull --depth=1
+    touch ~/.p10k-daily-$(date +%Y%m%d)
+  fi
+fi
+
 source ~/powerlevel10k/powerlevel10k.zsh-theme
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
