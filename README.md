@@ -27,7 +27,8 @@ I don't have any idea how you might make these useful for yourself, but, when I 
   * [tmux-continuum](https://github.com/tmux-plugins/tmux-continuum)
   * [tmux-slack-counter](https://github.com/x4121/tmux-slack-counter)
 * fix up
-  * the alacritty config really only ever needs to be on my mac, so why am I putting it anywhere else?
+  * the alacritty config really only ever needs to be on my mac, so why am I putting it anywhere else? (i.e. split branches)
+  * setup some local path overrides and drop the OSC52 helper in there too maybe, to make setup easier for me on remote hosts (idea came from reading https://drewdevault.com//2019/12/30/dotfiles.html)
 * cleanup / include
   * weechat
   * .[ba/z/fi]shrc if ever I actually put anything in them, and get everything to use the same shell.
