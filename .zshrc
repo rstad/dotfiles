@@ -23,6 +23,8 @@ else
 	alias ll='ls -GlhF '
 fi
 
+mkdir -p ~/bin
+
 if [[ ! -a ~/bin/nao ]]; then
     echo '#!/bin/bash' > ~/bin/nao
     read "uservar?nao user: "
