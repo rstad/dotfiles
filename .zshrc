@@ -1,6 +1,7 @@
 export PATH=~/bin/$(hostname):~/bin/$(uname -s):~/bin:$PATH
 export EDITOR=vim
 export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
 
 setopt histignorealldups sharehistory prompt_subst
 
@@ -40,8 +41,8 @@ then
 else
   if [ ! -f ~/.p10k-daily-$(date +%Y%m%d) ]; then
     rm -f ~/.p10k-daily-*
-    cd ~/powerlevel10k
-    git pull --depth=1
+    rm -rf ~/powerlevel10k
+    git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/powerlevel10k
     touch ~/.p10k-daily-$(date +%Y%m%d)
   fi
 fi
