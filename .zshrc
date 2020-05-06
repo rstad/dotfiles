@@ -14,7 +14,6 @@ SAVEHIST=50000
 HISTFILE=~/.zsh_history
 
 alias config='/usr/bin/git --git-dir=$HOME/.myconfig/ --work-tree=$HOME'
-alias b50='ddcctl -d 1 -b 50'
 
 if ls --version 2>&1 | grep -i gnu >/dev/null 
 then
