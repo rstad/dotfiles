@@ -14,13 +14,14 @@ SAVEHIST=50000
 HISTFILE=~/.zsh_history
 
 alias config='/usr/bin/git --git-dir=$HOME/.myconfig/ --work-tree=$HOME'
+alias ebv='source env/bin/activate'
 
 if ls --version 2>&1 | grep -i gnu >/dev/null 
 then
-	alias ls='ls --color -Fh '
+	alias ls='ls --color -F '
 	alias ll='ls --color -Flh '
 else
-	alias ls='ls -GhF '
+	alias ls='ls -GF '
 	alias ll='ls -GlhF '
 fi
 

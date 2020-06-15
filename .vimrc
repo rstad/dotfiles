@@ -12,6 +12,8 @@ colorscheme solarized
 set laststatus=2
 " Allow saving of files as sudo when I forgot to start vim using sudo.
 cmap w!! w !sudo tee > /dev/null %
+inoremap jk <Esc>
+" inoremap kj <Esc>
 
 set autoindent " keep indentation when starting new lines
 set tabstop=2 " spaces per tab
