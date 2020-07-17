@@ -5,6 +5,17 @@ export LC_ALL=en_US.UTF-8
 
 setopt histignorealldups sharehistory prompt_subst
 
+
+# source platform-specific files
+# platform name: Darwin, SunOS, Linux, etc
+platform=$(uname -s)
+if [ -d ~/.config/platform/$(uname -s) ]; then
+  for file in $(find ~/.config/platform/$platform -name "*.sh"); do
+    #echo platform $file
+    . $file
+  done
+fi
+
 # Use emacs keybindings even if our EDITOR is set to vi
 bindkey -e
 
