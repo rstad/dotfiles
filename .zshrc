@@ -1,7 +1,8 @@
-export PATH=~/bin/$(hostname):~/bin/$(uname -s):~/bin:$PATH
+export PATH=~/bin/$(hostname):~/bin/$(uname -s):~/bin:/usr/local/sbin:$PATH
 export EDITOR=vim
 export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
+export GAMCFGDIR="$HOME/GAM/config"
 
 setopt histignorealldups sharehistory prompt_subst
 
@@ -26,6 +27,10 @@ HISTFILE=~/.zsh_history
 
 alias config='/usr/bin/git --git-dir=$HOME/.myconfig/ --work-tree=$HOME'
 alias ebv='source env/bin/activate'
+alias nb='git checkout main && git pull && git checkout -b '
+alias randkey='cat /dev/urandom | base64 | tr -dc '\''A-Z'\'' | head -c10 | pbcopy'
+
+alias gam="/Users/russell.stadler/bin/gamadv-xtd3/gam"
 
 if ls --version 2>&1 | grep -i gnu >/dev/null 
 then
@@ -53,8 +58,9 @@ then
 else
   if [ ! -f ~/.p10k-daily-$(date +%Y%m%d) ]; then
     rm -f ~/.p10k-daily-*
-    rm -rf ~/powerlevel10k
-    git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/powerlevel10k
+    #rm -rf ~/powerlevel10k
+    #git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ~/powerlevel10k
+    git -C ~/powerlevel10k pull --ff-only
     touch ~/.p10k-daily-$(date +%Y%m%d)
   fi
 fi
@@ -63,3 +69,11 @@ source ~/powerlevel10k/powerlevel10k.zsh-theme
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+eval "$(op completion zsh)"; compdef _op op
+
+
