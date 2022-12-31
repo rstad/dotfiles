@@ -1,0 +1,12 @@
+[user]
+{{- if eq .chezmoi.hostname "C-C02D65SPMD6R" }}
+	email = russell.stadler@chime.com
+{{- end }}
+{{- if ne .chezmoi.hostname "work-laptop" }}
+	email = 3325739+rstad@users.noreply.github.com
+{{- end }}
+	name = Russell Stadler
+[pull]
+	rebase = false
+[init]
+	defaultBranch = main
