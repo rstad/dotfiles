@@ -1,0 +1,9 @@
+[".vim/colors/solarized.vim"]
+    type = "file"
+    url = "https://raw.githubusercontent.com/altercation/vim-colors-solarized/master/colors/solarized.vim"
+    refreshPeriod = "168h"
+
+[".config/alacritty-colors"]
+    type = "git-repo"
+    url = "https://github.com/eendroroy/alacritty-theme.git"
+    refreshPeriod = "168h"

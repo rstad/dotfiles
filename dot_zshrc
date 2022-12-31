@@ -2,6 +2,9 @@ export PATH=~/bin/$(hostname):~/bin/$(uname -s):~/bin:/usr/local/sbin:$PATH
 export EDITOR=vim
 export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
+export COLOR_DIR="~/.config/alacritty-colors/themes"
+export LIGHT_COLOR='solarized_light.yaml'
+export DARK_COLOR='solarized_dark.yaml'
 
 setopt histignorealldups sharehistory prompt_subst
 
@@ -12,6 +15,10 @@ bindkey -e
 HISTSIZE=50000
 SAVEHIST=50000
 HISTFILE=~/.zsh_history
+
+alias ebv='source env/bin/activate'
+alias day="alacritty-colorscheme -C $COLOR_DIR -a $LIGHT_COLOR -V"
+alias night="alacritty-colorscheme -C $COLOR_DIR -a $DARK_COLOR -V"
 
 if ls --version 2>&1 | grep -i gnu >/dev/null 
 then
