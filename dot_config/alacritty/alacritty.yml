@@ -55,7 +55,7 @@ window:
 
   # When true, alacritty starts maximized.
   #start_maximized: false
-  startup_mode: Fullscreen
+  startup_mode: Windowed
 
 scrolling:
   # Maximum number of lines in the scrollback buffer.
