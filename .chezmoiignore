@@ -4,3 +4,8 @@ README.md
 {{- if eq .chezmoi.os "darwin" }}
 .ssh/rc
 {{- end }}
+
+{{- /* Terminal config; Mac only until Windows/WSL is sorted out */}}
+{{- if ne .chezmoi.os "darwin" }}
+.wezterm.lua
+{{- end }}
