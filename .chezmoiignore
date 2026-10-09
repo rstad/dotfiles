@@ -1,0 +1,6 @@
+README.md
+
+{{- /* sshd-only helper; pointless on a laptop */}}
+{{- if eq .chezmoi.os "darwin" }}
+.ssh/rc
+{{- end }}

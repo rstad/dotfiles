@@ -1,0 +1,5 @@
+# Leftovers from the powerlevel10k / alacritty era
+.p10k.zsh
+.p10k-daily-*
+powerlevel10k
+.config/alacritty-colors

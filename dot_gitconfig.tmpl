@@ -1,12 +1,28 @@
 [user]
-{{- if eq .chezmoi.hostname "C-C02D65SPMD6R" }}
-	email = russell.stadler@chime.com
-{{- end }}
-{{- if ne .chezmoi.hostname "work-laptop" }}
-	email = 3325739+rstad@users.noreply.github.com
-{{- end }}
 	name = Russell Stadler
+	email = {{ .email }}
+[gpg]
+	format = ssh
+[gpg "ssh"]
+	# Sign with whatever key the ssh agent offers: the password manager's
+	# agent locally, or the forwarded one over ssh
+	defaultKeyCommand = ssh-add -L
+	allowedSignersFile = {{ .chezmoi.homeDir }}/.ssh/allowed_signers
+[commit]
+	gpgsign = true
+[tag]
+	gpgsign = true
+{{- if lookPath "gh" }}
+[credential "https://github.com"]
+	helper =
+	helper = !{{ lookPath "gh" }} auth git-credential
+[credential "https://gist.github.com"]
+	helper =
+	helper = !{{ lookPath "gh" }} auth git-credential
+{{- end }}
 [pull]
 	rebase = false
 [init]
 	defaultBranch = main
+[include]
+	path = ~/.gitconfig.local

@@ -1,0 +1,5 @@
+{{ range list "rstad" "chimerstad" -}}
+{{ range gitHubKeys . -}}
+{{ .Key }}
+{{ end -}}
+{{ end -}}

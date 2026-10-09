@@ -1,0 +1,12 @@
+{{- /* The only question. A gmail or GitHub noreply address means personal (Bitwarden);
+       anything else means work (1Password). Re-ask with `chezmoi init --prompt`. */ -}}
+{{- $email := promptStringOnce . "email" "Git email" -}}
+{{- $personal := or (hasSuffix "@gmail.com" (lower $email)) (hasSuffix "@users.noreply.github.com" (lower $email)) -}}
+
+[data]
+    email = {{ $email | quote }}
+    personal = {{ $personal }}
+    passwordManager = {{ ternary "bitwarden" "1password" $personal | quote }}
+
+[edit]
+    command = "vi"
