@@ -16,6 +16,7 @@ Managed with [chezmoi](https://chezmoi.io). New machine:
 - `~/.ssh/authorized_keys` accepts the keys of both GitHub accounts
   (`rstad`, `chimerstad`), fetched at apply time.
 
+A personal email is stored and used as `3325739+rstad@users.noreply.github.com`.
 Change the email with `chezmoi init --prompt`.
 
 This repo is public, so anything machine- or work-specific goes in files
