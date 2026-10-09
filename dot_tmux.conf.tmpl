@@ -76,19 +76,12 @@ bind -n S-Right next-window
 # bind C-b send-prefix
 bind b last-window
 
-# List of plugins
-# NOTE: This REQUIRES the following command to be run:
-#
-# $ git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
-#
-# After that, do C-b I in tmux to install the other plugins.
+# List of plugins (from .chezmoidata.toml; chezmoi clones them into ~/.tmux/plugins)
 set -g @plugin 'tmux-plugins/tpm'
-#set -g @plugin 'tmux-plugins/tmux-sensible'
-set -g @plugin 'tmux-plugins/tmux-pain-control'
-set -g @plugin 'tmux-plugins/tmux-sidebar'
+{{- range .tmuxPlugins }}
+set -g @plugin 'tmux-plugins/{{ . }}'
+{{- end }}
 set -g @sidebar-tree-command 'tree -C -L 2'
-set -g @plugin 'tmux-plugins/tmux-yank'
-set -g @plugin 'tmux-plugins/tmux-resurrect'
 # these two lines I think I only want to do on local machines
 if-shell 'test -n "$SSH_CLIENT"' "" "set -g @plugin 'tmux-plugins/tmux-open'"
 if-shell 'test -n "$SSH_CLIENT"' "" "set -g @open-S 'https://www.duckduckgo.com/'"
@@ -117,10 +110,6 @@ bind -T off F12 \
   set -u key-table \;\
   set -u status-left \;\
   refresh-client -S
-
-# make sure tpm is installed, and if not, grab it and plugins, for setting up on new host
-if "test ! -d ~/.tmux/plugins/tpm" \
-   "run 'git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm && ~/.tmux/plugins/tpm/bin/install_plugins'"
 
 # Initialize TMUX plugin manager (keep this line at the very bottom of tmux.conf)
 run -b '~/.tmux/plugins/tpm/tpm'

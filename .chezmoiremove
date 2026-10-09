@@ -1,5 +1,6 @@
-# Leftovers from the powerlevel10k / alacritty era
+# Leftovers from the powerlevel10k / alacritty / solarized era
 .p10k.zsh
 .p10k-daily-*
 powerlevel10k
 .config/alacritty-colors
+.vim/colors/solarized.vim

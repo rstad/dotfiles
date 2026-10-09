@@ -1,0 +1,7 @@
+{{- range concat (list "tpm" "tmux-open") .tmuxPlugins }}
+
+[".tmux/plugins/{{ . }}"]
+    type = "git-repo"
+    url = "https://github.com/tmux-plugins/{{ . }}.git"
+    refreshPeriod = "168h"
+{{- end }}
