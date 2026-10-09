@@ -42,8 +42,8 @@ set -g set-titles-string "#I:#W"
 # Enable mouse
 set -g mouse on
 
-# Hide status bar on demand
-bind C-s if -F '#{s/off//:status}' 'set status off' 'set status on'
+# Hide status bar on demand (C-s/C-r belong to tmux-resurrect)
+bind S if -F '#{s/off//:status}' 'set status off' 'set status on'
 
 #statusline setup
 set -g status on
@@ -54,7 +54,7 @@ set -g status-interval 5
 #set -ag status-right "#[fg=orange][#[fg=orange]%d-%m-%Y #[fg=orange]%H:%M#[fg=orange]]"
 
 # Reload tmux configuration 
-bind C-r source-file ~/.tmux.conf \; display "Config reloaded"
+bind r source-file ~/.tmux.conf \; display "Config reloaded"
 
 # Use Alt-vim keys without prefix key to switch panes
 bind -n M-h select-pane -L
