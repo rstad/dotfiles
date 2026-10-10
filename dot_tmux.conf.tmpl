@@ -7,7 +7,7 @@ setw -g allow-rename off
 setw -g automatic-rename off
 
 # address vim mode switching delay (http://superuser.com/a/252717/65504)
-set -s escape-time 0
+set -s escape-time 10
 
 # increase scrollback buffer size
 set -g history-limit 50000
@@ -32,10 +32,10 @@ set -g focus-events on
 # super useful when using "grouped sessions" and multi-monitor setup
 setw -g aggressive-resize on
 
-# for local I want to put status on top so it doesn' conflict with bottom in remotes
+# local status bar on top so it doesn't stack with a remote session's (bottom)
 set -g status-position top
 
-# Set parent terminal title to reflect current window in tmux session 
+# Set parent terminal title to reflect current window in tmux session
 set -g set-titles on
 set -g set-titles-string "#I:#W"
 
@@ -53,12 +53,12 @@ set -g status-interval 5
 #date/time
 #set -ag status-right "#[fg=orange][#[fg=orange]%d-%m-%Y #[fg=orange]%H:%M#[fg=orange]]"
 
-# Reload tmux configuration 
+# Reload tmux configuration
 bind r source-file ~/.tmux.conf \; display "Config reloaded"
 
 # Use Alt-vim keys without prefix key to switch panes
 bind -n M-h select-pane -L
-bind -n M-j select-pane -D 
+bind -n M-j select-pane -D
 bind -n M-k select-pane -U
 bind -n M-l select-pane -R
 
@@ -72,8 +72,7 @@ bind -n M-Down select-pane -D
 bind -n S-Left  previous-window
 bind -n S-Right next-window
 
-# i think this makes it so C-b b will go to previous window
-# bind C-b send-prefix
+# C-b b jumps to the previously active window
 bind b last-window
 
 # List of plugins (from .chezmoidata.toml; chezmoi clones them into ~/.tmux/plugins)
@@ -89,7 +88,6 @@ if-shell 'test -n "$SSH_CLIENT"' "" "set -g @open-S 'https://www.duckduckgo.com/
 # ===   Nesting local and remote sessions     ===
 
 # Session is considered to be remote when we ssh into host
-# moved this out of the nesting-local-remote section because I wasn't sure if it needs to be after the yank load line
 if-shell 'test -n "$SSH_CLIENT"' \
     'source-file ~/.tmux.remote.conf'
 
@@ -103,7 +101,7 @@ bind -T root F12  \
     set key-table off \;\
     set status-left " REM " \;\
     if -F '#{pane_in_mode}' 'send-keys -X cancel' \;\
-    refresh-client -S \;\
+    refresh-client -S
 
 bind -T off F12 \
   set -u prefix \;\
