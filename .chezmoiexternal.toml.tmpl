@@ -5,3 +5,15 @@
     url = "https://github.com/tmux-plugins/{{ . }}.git"
     refreshPeriod = "168h"
 {{- end }}
+
+{{- /* zellij: prebuilt Linux binary (Debian/Ubuntu packages are stale); Macs use brew */}}
+{{- $zellijArch := get (dict "amd64" "x86_64" "arm64" "aarch64") .chezmoi.arch }}
+{{- if and (eq .chezmoi.os "linux") $zellijArch }}
+
+[".local/bin/zellij"]
+    type = "archive-file"
+    url = "https://github.com/zellij-org/zellij/releases/latest/download/zellij-{{ $zellijArch }}-unknown-linux-musl.tar.gz"
+    path = "zellij"
+    executable = true
+    refreshPeriod = "168h"
+{{- end }}
