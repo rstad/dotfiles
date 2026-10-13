@@ -1,6 +1,6 @@
 README.md
 
-{{- /* Terminal config; Mac only until Windows/WSL is sorted out */}}
+{{- /* Terminal config; on WSL a script copies it to the Windows home instead */}}
 {{- if ne .chezmoi.os "darwin" }}
 .wezterm.lua
 {{- end }}
