@@ -1,3 +1,6 @@
 # tmux plugins (github.com/tmux-plugins/<name>): cloned by .chezmoiexternal,
 # loaded by tpm via .tmux.conf. tmux-open is extra, loaded only outside ssh.
 tmuxPlugins = ["tmux-pain-control", "tmux-sidebar", "tmux-yank", "tmux-resurrect"]
+
+# GitHub accounts whose SSH keys may log in and whose signatures are trusted
+githubUsers = ["rstad", "chimerstad"]

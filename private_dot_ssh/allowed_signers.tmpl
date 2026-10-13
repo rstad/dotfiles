@@ -1,6 +1,2 @@
-{{- /* Lets `git log --show-signature` verify commits made with any of my keys */ -}}
-{{ range list "rstad" "chimerstad" -}}
-{{ range gitHubKeys . -}}
-* {{ .Key }}
-{{ end -}}
-{{ end -}}
+{{- $existing := joinPath .chezmoi.destDir ".ssh/allowed_signers" -}}
+{{- output "sh" "-c" (includeTemplate "github-keys.sh" .) "sh" $existing "* " (join " " .githubUsers) -}}
