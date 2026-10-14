@@ -7,3 +7,14 @@ tmuxPlugins = ["tmux-pain-control", "tmux-sidebar", "tmux-yank", "tmux-resurrect
 [github]
     personal = "rstad"
     work = "chimerstad"
+
+# Installed by run_onchange_after_install-packages when missing; upgrades are
+# left to apt/brew. Everything else comes from release binaries
+# (.chezmoiexternal): on Linux starship, fzf, glow, dust and zellij, on Macs
+# all the rest. gh on Linux comes from GitHub's own apt repo.
+[packages]
+    apt = ["zsh", "tmux", "vim", "git", "curl", "tree", "gh",
+           "ripgrep", "fd-find", "bat", "zoxide", "eza", "git-delta"]
+    # No Mac release binaries for these (delta has one for Apple Silicon only)
+    brew = ["tmux", "tree", "eza"]
+    brewIntel = ["git-delta"]

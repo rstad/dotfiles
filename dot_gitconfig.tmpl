@@ -12,14 +12,26 @@
 	gpgsign = true
 [tag]
 	gpgsign = true
-{{- if lookPath "gh" }}
+{{- /* gh's install location (apt on Linux, release binary on Macs), spelled
+       out so it works before gh is installed and from cron's short PATH */}}
+{{- $gh := lookPath "gh" }}
+{{- if eq .chezmoi.os "linux" }}{{ $gh = "/usr/bin/gh" }}{{ end }}
+{{- if eq .chezmoi.os "darwin" }}{{ $gh = joinPath .chezmoi.homeDir ".local/bin/gh" }}{{ end }}
+{{- if $gh }}
 [credential "https://github.com"]
 	helper =
-	helper = !{{ lookPath "gh" }} auth git-credential
+	helper = !{{ $gh }} auth git-credential
 [credential "https://gist.github.com"]
 	helper =
-	helper = !{{ lookPath "gh" }} auth git-credential
+	helper = !{{ $gh }} auth git-credential
 {{- end }}
+[core]
+	# delta where it's installed, otherwise git's usual less
+	pager = command -v delta >/dev/null && exec delta || exec less
+[interactive]
+	diffFilter = command -v delta >/dev/null && exec delta --color-only || exec cat
+[delta]
+	navigate = true
 [pull]
 	rebase = false
 [init]

@@ -1,0 +1,54 @@
+{{- /* Install whatever on the list is missing. Runs after the files are in place
+       and again whenever the list changes; if it fails, the next update retries. */ -}}
+{{- if and (eq .chezmoi.os "linux") (lookPath "apt-get") -}}
+#!/bin/sh
+# Packages: {{ .packages.apt | join " " }}
+set -e
+sudo=sudo
+[ "$(id -u)" = 0 ] && sudo=
+
+# gh from GitHub's own repo: the Debian/Ubuntu ones are years behind
+missing=
+keyring=/etc/apt/keyrings/githubcli-archive-keyring.gpg
+if [ ! -f /etc/apt/sources.list.d/github-cli.list ]; then
+    echo "packages: adding GitHub's apt repo for gh" >&2
+    $sudo mkdir -p -m 755 /etc/apt/keyrings
+    curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | $sudo tee $keyring > /dev/null
+    $sudo chmod go+r $keyring
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=$keyring] https://cli.github.com/packages stable main" |
+        $sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+    missing=" gh"  # also replaces a distro gh that's already installed
+fi
+
+for pkg in {{ .packages.apt | join " " }}; do
+    dpkg-query -W -f '${Status}' "$pkg" 2> /dev/null | grep -q 'ok installed' || missing="$missing $pkg"
+done
+if [ -n "$missing" ]; then
+    echo "packages: installing$missing" >&2
+    $sudo apt-get update -qq
+    $sudo env DEBIAN_FRONTEND=noninteractive apt-get install -y -qq $missing
+fi
+{{- else if eq .chezmoi.os "darwin" -}}
+{{- $formulae := .packages.brew }}
+{{- if eq .chezmoi.arch "amd64" }}{{ $formulae = concat $formulae .packages.brewIntel }}{{ end -}}
+#!/bin/sh
+# Packages: {{ $formulae | join " " }}
+set -e
+for brew in brew /opt/homebrew/bin/brew /usr/local/bin/brew ""; do
+    command -v $brew > /dev/null 2>&1 && break
+done
+if [ -z "$brew" ]; then
+    echo "packages: Homebrew isn't installed, skipping" >&2
+    exit 0
+fi
+
+installed=$($brew list --formula -1)
+missing=
+for pkg in {{ $formulae | join " " }}; do
+    echo "$installed" | grep -qx "$pkg" || missing="$missing $pkg"
+done
+if [ -n "$missing" ]; then
+    echo "packages: installing$missing" >&2
+    $brew install $missing
+fi
+{{- end }}
