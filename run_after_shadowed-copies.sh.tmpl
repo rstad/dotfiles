@@ -1,0 +1,76 @@
+{{- /* After every apply, point out other copies of the release binaries on PATH:
+       ones ~/.local/bin hides (unused, safe to remove) and ones that come
+       before it (they win, so the managed copy is unused). Removes nothing. */ -}}
+{{- $os := .chezmoi.os }}
+{{- $platform := printf "%s/%s" .chezmoi.os .chezmoi.arch }}
+{{- $names := list }}
+{{- range .releases }}
+{{-   $platforms := splitList " " (index . 2) }}
+{{-   if or (has $os $platforms) (has $platform $platforms) }}
+{{-     $names = append $names (index . 0) }}
+{{-   end }}
+{{- end }}
+{{- if $names -}}
+#!/bin/sh
+mine=$HOME/.local/bin
+case ":$PATH:" in
+    *":$mine:"*) ;;
+    *)
+        echo "chezmoi: ~/.local/bin isn't on PATH here, so the managed tools go unused" >&2
+        exit 0
+        ;;
+esac
+hidden= winning= apt= brew=
+for name in {{ $names | join " " }}; do
+    [ -x "$mine/$name" ] || continue
+    seen=$(realpath "$mine/$name")
+    before=yes
+    IFS=:
+    for dir in $PATH; do
+        unset IFS
+        if [ "$dir" = "$mine" ]; then
+            before=
+            continue
+        fi
+        [ -x "$dir/$name" ] || continue
+        real=$(realpath "$dir/$name")
+        case " $seen " in *" $real "*) continue ;; esac  # same file via /bin, /usr/bin
+        seen="$seen $real"
+        how=
+        case $real in
+            */Cellar/*)
+                formula=${real#*/Cellar/}
+                formula=${formula%%/*}
+                how=" (brew $formula)"
+                brew="$brew $formula"
+                ;;
+            *)
+                if pkg=$(dpkg -S "$real" 2> /dev/null); then
+                    pkg=${pkg%%:*}
+                    how=" (apt $pkg)"
+                    apt="$apt $pkg"
+                fi
+                ;;
+        esac
+        if [ -n "$before" ]; then
+            winning="$winning    $dir/$name$how
+"
+        else
+            hidden="$hidden    $dir/$name$how
+"
+        fi
+    done
+    unset IFS
+done
+if [ -n "$winning" ]; then
+    printf 'chezmoi: these come before ~/.local/bin on PATH, so the managed copies go unused:\n%s' "$winning" >&2
+fi
+if [ -n "$hidden" ]; then
+    printf 'chezmoi: ~/.local/bin hides these, so they go unused and can be removed:\n%s' "$hidden" >&2
+fi
+if [ -n "$winning$hidden" ]; then
+    [ -n "$apt" ] && echo "    apt packages:$apt  (sudo apt remove ...)" >&2
+    [ -n "$brew" ] && echo "    brew formulae:$brew  (brew uninstall ...)" >&2
+fi
+exit 0
+{{- end }}

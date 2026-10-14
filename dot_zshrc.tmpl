@@ -70,7 +70,12 @@ if ls --version 2>&1 | grep -qi gnu; then
 else
   alias ls='ls -GhF'
 fi
-alias ll='ls -l'
+# ls stays ls; the shortcuts use eza where it's installed (its flags differ)
+if command -v eza >/dev/null; then
+  alias ll='eza -l --git' la='eza -la --git' lt='eza --tree --level=2'
+else
+  alias ll='ls -l' la='ls -la'
+fi
 
 # fzf: Ctrl-R searches history, Ctrl-T inserts a file, Alt-C cds; file lists
 # come from fd, so .gitignored files are skipped

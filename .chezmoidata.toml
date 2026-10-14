@@ -2,6 +2,27 @@
 # loaded by tpm via .tmux.conf. tmux-open is extra, loaded only outside ssh.
 tmuxPlugins = ["tmux-pain-control", "tmux-sidebar", "tmux-yank", "tmux-resurrect"]
 
+# Release binaries, installed in ~/.local/bin by .chezmoiexternal.toml.tmpl and
+# refreshed weekly. Linux uses these where apt's are missing (Ubuntu 24.04) or
+# old; Macs use them because Homebrew no longer builds Intel bottles.
+# Placeholders: {tag} release tag, {ver} tag without "v", {os} linux/darwin,
+# {Os} Linux/Darwin, {go} amd64/arm64, {rust} x86_64/aarch64,
+# {rustos} unknown-linux-musl/apple-darwin, {glow} x86_64/arm64.
+releases = [
+    # binary    repo                  platforms       release file                            path inside it
+    ["zellij",   "zellij-org/zellij",  "linux darwin", "zellij-{rust}-{rustos}.tar.gz",        "zellij"],
+    ["starship", "starship/starship",  "linux darwin", "starship-{rust}-{rustos}.tar.gz",      "starship"],
+    ["fzf",      "junegunn/fzf",       "linux darwin", "fzf-{ver}-{os}_{go}.tar.gz",           "fzf"],
+    ["glow",     "charmbracelet/glow", "linux darwin", "glow_{ver}_{Os}_{glow}.tar.gz",        "glow_{ver}_{Os}_{glow}/glow"],
+    ["dust",     "bootandy/dust",      "linux darwin", "dust-{tag}-{rust}-{rustos}.tar.gz",    "dust-{tag}-{rust}-{rustos}/dust"],
+    ["rg",       "BurntSushi/ripgrep", "darwin",       "ripgrep-{ver}-{rust}-{rustos}.tar.gz", "ripgrep-{ver}-{rust}-{rustos}/rg"],
+    ["fd",       "sharkdp/fd",         "darwin",       "fd-{tag}-{rust}-{rustos}.tar.gz",      "fd-{tag}-{rust}-{rustos}/fd"],
+    ["bat",      "sharkdp/bat",        "darwin",       "bat-{tag}-{rust}-{rustos}.tar.gz",     "bat-{tag}-{rust}-{rustos}/bat"],
+    ["zoxide",   "ajeetdsouza/zoxide", "darwin",       "zoxide-{ver}-{rust}-{rustos}.tar.gz",  "zoxide"],
+    ["gh",       "cli/cli",            "darwin",       "gh_{ver}_macOS_{go}.zip",              "gh_{ver}_macOS_{go}/bin/gh"],
+    ["delta",    "dandavison/delta",   "darwin/arm64", "delta-{ver}-{rust}-{rustos}.tar.gz",   "delta-{ver}-{rust}-{rustos}/delta"],
+]
+
 # GitHub accounts. Both accounts' SSH keys may log in and are trusted signers;
 # commits are signed with the key of the account that matches the commit email.
 [github]
@@ -9,9 +30,8 @@ tmuxPlugins = ["tmux-pain-control", "tmux-sidebar", "tmux-yank", "tmux-resurrect
     work = "chimerstad"
 
 # Installed by run_onchange_after_install-packages when missing; upgrades are
-# left to apt/brew. Everything else comes from release binaries
-# (.chezmoiexternal): on Linux starship, fzf, glow, dust and zellij, on Macs
-# all the rest. gh on Linux comes from GitHub's own apt repo.
+# left to apt/brew. Everything else comes from `releases` below. gh on Linux
+# comes from GitHub's own apt repo.
 [packages]
     apt = ["zsh", "tmux", "vim", "git", "curl", "tree", "gh",
            "ripgrep", "fd-find", "bat", "zoxide", "eza", "git-delta"]

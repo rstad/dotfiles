@@ -7,14 +7,9 @@
 {{- end }}
 
 
-{{- /* Prebuilt release binaries into ~/.local/bin. Linux uses these where apt's
-       are missing (Ubuntu 24.04) or old; Macs use them because Homebrew no
-       longer builds bottles for Intel, so brew would compile them.
-       Each row: binary, repo, platforms, file, path inside it. Placeholders:
-       {tag} release tag, {ver} tag without "v", {os} linux/darwin, {Os}
-       Linux/Darwin, {go} amd64/arm64, {rust} x86_64/aarch64, {rustos}
-       unknown-linux-musl/apple-darwin, {glow} x86_64/arm64.
-       The latest tag comes from latest-release.sh (cached for a week). */}}
+{{- /* Release binaries into ~/.local/bin, from the `releases` table in
+       .chezmoidata.toml. The latest tag comes from latest-release.sh (cached
+       for a week); a tool whose tag can't be found is skipped this time. */}}
 {{- $rust := get (dict "amd64" "x86_64" "arm64" "aarch64") .chezmoi.arch }}
 {{- $rustos := get (dict "linux" "unknown-linux-musl" "darwin" "apple-darwin") .chezmoi.os }}
 {{- if and $rust $rustos }}
@@ -28,18 +23,7 @@
       "{rustos}" $rustos
       "{glow}" (get (dict "amd64" "x86_64" "arm64" "arm64") .chezmoi.arch) }}
 {{- $latest := includeTemplate "latest-release.sh" . }}
-{{- range list
-      (list "zellij"   "zellij-org/zellij"   "linux darwin"  "zellij-{rust}-{rustos}.tar.gz"      "zellij")
-      (list "starship" "starship/starship"   "linux darwin"  "starship-{rust}-{rustos}.tar.gz"    "starship")
-      (list "fzf"      "junegunn/fzf"        "linux darwin"  "fzf-{ver}-{os}_{go}.tar.gz"         "fzf")
-      (list "glow"     "charmbracelet/glow"  "linux darwin"  "glow_{ver}_{Os}_{glow}.tar.gz"      "glow_{ver}_{Os}_{glow}/glow")
-      (list "dust"     "bootandy/dust"       "linux darwin"  "dust-{tag}-{rust}-{rustos}.tar.gz"  "dust-{tag}-{rust}-{rustos}/dust")
-      (list "rg"       "BurntSushi/ripgrep"  "darwin"        "ripgrep-{ver}-{rust}-{rustos}.tar.gz" "ripgrep-{ver}-{rust}-{rustos}/rg")
-      (list "fd"       "sharkdp/fd"          "darwin"        "fd-{tag}-{rust}-{rustos}.tar.gz"    "fd-{tag}-{rust}-{rustos}/fd")
-      (list "bat"      "sharkdp/bat"         "darwin"        "bat-{tag}-{rust}-{rustos}.tar.gz"   "bat-{tag}-{rust}-{rustos}/bat")
-      (list "zoxide"   "ajeetdsouza/zoxide"  "darwin"        "zoxide-{ver}-{rust}-{rustos}.tar.gz" "zoxide")
-      (list "gh"       "cli/cli"             "darwin"        "gh_{ver}_macOS_{go}.zip"            "gh_{ver}_macOS_{go}/bin/gh")
-      (list "delta"    "dandavison/delta"    "darwin/arm64"  "delta-{ver}-{rust}-{rustos}.tar.gz" "delta-{ver}-{rust}-{rustos}/delta") }}
+{{- range .releases }}
 {{-   $platforms := splitList " " (index . 2) }}
 {{-   if or (has $os $platforms) (has $platform $platforms) }}
 {{-     $tag := output "sh" "-c" $latest "sh" (index . 1) | trim }}
