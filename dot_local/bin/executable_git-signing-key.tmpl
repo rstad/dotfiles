@@ -35,8 +35,9 @@ key=$(printf '%s\n' "$agent_keys" | while read -r type blob _; do
         '$2 == type && $3 == blob && $4 == account { print "key::" $2 " " $3 }' "$signers"
 done | sed -n 1p)
 
-[ -n "$key" ] || fail "commits as $email need a $account key, but the agent only has:
+[ -n "$key" ] || fail "commits as $email need a $account key, but this host knows none of the agent's keys as one:
 $(printf '%s\n' "$agent_keys" | sed 's/^[^ ]* [^ ]* */    /')
-Connect with the right agent, or override: SIGN_WITH_ANY_KEY=1 git commit ..."
+Connect with the right agent, run 'chezmoi update' if the key is new on GitHub,
+or override: SIGN_WITH_ANY_KEY=1 git commit ..."
 
 printf '%s\n' "$key"
