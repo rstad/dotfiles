@@ -1,0 +1,28 @@
+#!/bin/sh
+# copy: put stdin, or the given files, on the clipboard of the machine you are
+# sitting at, even over ssh and inside tmux or zellij.
+#
+#     git log -1 | copy        copy ~/.ssh/id_ed25519.pub
+#
+# On a Mac at its own keyboard this is pbcopy. Everywhere else it sends the
+# text to your terminal with an OSC 52 escape sequence, which travels back
+# through ssh; tmux relays it for us, zellij passes it along.
+tmp=$(mktemp) || exit 1
+trap 'rm -f "$tmp"' EXIT
+cat -- "$@" > "$tmp" || exit 1
+
+if [ -z "$SSH_CONNECTION" ] && command -v pbcopy > /dev/null; then
+    pbcopy < "$tmp"
+    # in tmux, carry on: the session may be attached from another machine
+    [ -n "$TMUX" ] || exit 0
+fi
+
+if [ -n "$TMUX" ]; then
+    # -w also sends the buffer to the terminal's clipboard (tmux 3.2+)
+    tmux load-buffer -w "$tmp" 2> /dev/null || tmux load-buffer "$tmp"
+elif (: > /dev/tty) 2> /dev/null; then
+    printf '\033]52;c;%s\a' "$(base64 < "$tmp" | tr -d '\n')" > /dev/tty
+else
+    echo "copy: no terminal to send the clipboard to" >&2
+    exit 1
+fi

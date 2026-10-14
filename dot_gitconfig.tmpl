@@ -4,8 +4,8 @@
 [gpg]
 	format = ssh
 [gpg "ssh"]
-	# Sign with whatever key the ssh agent offers: the password manager's
-	# agent locally, or the forwarded one over ssh
+	# Sign with the ssh agent key that matches the commit email (the password
+	# manager's agent locally, or the forwarded one over ssh)
 	defaultKeyCommand = {{ .chezmoi.homeDir }}/.local/bin/git-signing-key
 	allowedSignersFile = {{ .chezmoi.homeDir }}/.ssh/allowed_signers
 [commit]

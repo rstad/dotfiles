@@ -19,7 +19,8 @@ set -g display-time 4000
 set -g default-terminal "tmux-256color"
 set -ag terminal-features ",*:RGB"
 
-# copy to the outer terminal's clipboard via OSC 52 (works over ssh too)
+# copy to the outer terminal's clipboard via OSC 52 (works over ssh too);
+# ~/.local/bin/copy does the same from the shell
 set -g set-clipboard on
 
 # emacs key bindings in tmux command prompt (prefix + :) are better than
@@ -81,6 +82,8 @@ set -g @plugin 'tmux-plugins/tpm'
 set -g @plugin 'tmux-plugins/{{ . }}'
 {{- end }}
 set -g @sidebar-tree-command 'tree -C -L 2'
+# tmux-yank: copy with our script, since remote hosts have no pbcopy or xclip
+set -g @override_copy_command '~/.local/bin/copy'
 # these two lines I think I only want to do on local machines
 if-shell 'test -n "$SSH_CLIENT"' "" "set -g @plugin 'tmux-plugins/tmux-open'"
 if-shell 'test -n "$SSH_CLIENT"' "" "set -g @open-S 'https://www.duckduckgo.com/'"
