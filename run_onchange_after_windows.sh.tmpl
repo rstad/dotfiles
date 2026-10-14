@@ -1,0 +1,37 @@
+{{- if and (eq .chezmoi.os "linux") (contains "microsoft" (lower .chezmoi.kernel.osrelease)) -}}
+#!/bin/sh
+# WSL: WezTerm and ssh.exe run on the Windows side, so copy their configs to
+# the Windows home. Re-runs when either changes:
+#   {{ include "dot_wezterm.lua" | sha256sum }}
+#   {{ include "private_dot_ssh/private_config" | sha256sum }}
+winhome=$(cd /mnt/c && cmd.exe /c 'echo %USERPROFILE%' 2>/dev/null | tr -d '\r')
+if [ -z "$winhome" ]; then
+    echo "windows: could not find the Windows home, skipping" >&2
+    exit 0
+fi
+winhome=$(wslpath "$winhome")
+
+cp "{{ .chezmoi.sourceDir }}/dot_wezterm.lua" "$winhome/.wezterm.lua"
+
+# ssh.exe can't run the 'resolves' check, and this machine isn't on the
+# tailnet, so the Tailscale hosts always go through west. A config that
+# chezmoi didn't write becomes config.local, which the new one includes.
+cfg=$winhome/.ssh/config
+mkdir -p "$winhome/.ssh"
+if [ -f "$cfg" ] && ! grep -q 'Managed by chezmoi' "$cfg"; then
+    if [ -e "$cfg.local" ]; then
+        mv "$cfg" "$cfg.pre-chezmoi"
+        echo "windows: saved the old ssh config as $cfg.pre-chezmoi" >&2
+    else
+        mv "$cfg" "$cfg.local"
+        echo "windows: moved the old ssh config to $cfg.local; trim it to what's still needed" >&2
+    fi
+fi
+{
+    echo "# Managed by chezmoi (written from WSL). Windows copy of ~/.ssh/config:"
+    echo "# Tailscale hosts always go through west. Local additions: config.local"
+    sed -e '/^#/d' \
+        -e '/^Match host .* !exec /{s/^Match host \([^ ]*\) .*/Host \1/;s/,/ /g;}' \
+        "{{ .chezmoi.sourceDir }}/private_dot_ssh/private_config"
+} > "$cfg"
+{{- end }}
