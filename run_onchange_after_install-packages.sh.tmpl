@@ -35,8 +35,7 @@ mkdir -p ~/.local/bin
 ln -sfn /usr/bin/fdfind ~/.local/bin/fd
 ln -sfn /usr/bin/batcat ~/.local/bin/bat
 {{- else if eq .chezmoi.os "darwin" -}}
-{{- $formulae := .packages.brew }}
-{{- if eq .chezmoi.arch "amd64" }}{{ $formulae = concat $formulae .packages.brewIntel }}{{ end -}}
+{{- $formulae := .packages.brew -}}
 #!/bin/sh
 # Packages: {{ $formulae | join " " }}
 set -e

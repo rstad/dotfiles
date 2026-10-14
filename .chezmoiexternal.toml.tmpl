@@ -26,7 +26,14 @@
 {{- range .releases }}
 {{-   $platforms := splitList " " (index . 2) }}
 {{-   if or (has $os $platforms) (has $platform $platforms) }}
-{{-     $tag := output "sh" "-c" $latest "sh" (index . 1) | trim }}
+{{-     $repo := index . 1 }}
+{{-     $tag := "" }}
+{{-     if contains "@" $repo }}
+{{-       $tag = splitList "@" $repo | last }}
+{{-       $repo = splitList "@" $repo | first }}
+{{-     else }}
+{{-       $tag = output "sh" "-c" $latest "sh" $repo | trim }}
+{{-     end }}
 {{-     if $tag }}
 {{-       $file := index . 3 }}
 {{-       $path := index . 4 }}
@@ -37,7 +44,7 @@
 
 [".local/bin/{{ index . 0 }}"]
     type = "archive-file"
-    url = "https://github.com/{{ index . 1 }}/releases/download/{{ $tag }}/{{ $file }}"
+    url = "https://github.com/{{ $repo }}/releases/download/{{ $tag }}/{{ $file }}"
     path = "{{ $path }}"
     executable = true
 {{-     end }}

@@ -8,6 +8,7 @@ tmuxPlugins = ["tmux-pain-control", "tmux-sidebar", "tmux-yank", "tmux-resurrect
 # Placeholders: {tag} release tag, {ver} tag without "v", {os} linux/darwin,
 # {Os} Linux/Darwin, {go} amd64/arm64, {rust} x86_64/aarch64,
 # {rustos} unknown-linux-musl/apple-darwin, {glow} x86_64/arm64.
+# repo@tag pins a release instead of following the latest.
 releases = [
     # binary    repo                  platforms       release file                            path inside it
     ["zellij",   "zellij-org/zellij",  "linux darwin", "zellij-{rust}-{rustos}.tar.gz",        "zellij"],
@@ -21,6 +22,8 @@ releases = [
     ["zoxide",   "ajeetdsouza/zoxide", "darwin",       "zoxide-{ver}-{rust}-{rustos}.tar.gz",  "zoxide"],
     ["gh",       "cli/cli",            "darwin",       "gh_{ver}_macOS_{go}.zip",              "gh_{ver}_macOS_{go}/bin/gh"],
     ["delta",    "dandavison/delta",   "darwin/arm64", "delta-{ver}-{rust}-{rustos}.tar.gz",   "delta-{ver}-{rust}-{rustos}/delta"],
+    # Last Intel Mac build; brew would compile Rust and LLVM from source
+    ["delta",    "dandavison/delta@0.18.2", "darwin/amd64", "delta-{ver}-{rust}-{rustos}.tar.gz", "delta-{ver}-{rust}-{rustos}/delta"],
 ]
 
 # GitHub accounts. Both accounts' SSH keys may log in and are trusted signers;
@@ -35,6 +38,5 @@ releases = [
 [packages]
     apt = ["zsh", "tmux", "vim", "git", "curl", "tree", "gh",
            "ripgrep", "fd-find", "bat", "zoxide", "eza", "git-delta"]
-    # No Mac release binaries for these (delta has one for Apple Silicon only)
+    # No Mac release binaries for these
     brew = ["tmux", "tree", "eza"]
-    brewIntel = ["git-delta"]
