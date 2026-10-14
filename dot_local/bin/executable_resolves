@@ -1,0 +1,9 @@
+#!/bin/sh
+# resolves HOST: succeed if this machine can look up HOST's address.
+# ~/.ssh/config uses it to decide whether a Tailscale host needs a jump.
+if command -v getent > /dev/null; then
+    getent hosts "$1" > /dev/null
+else
+    # macOS: dscacheutil exits 0 either way, but prints nothing on failure
+    dscacheutil -q host -a name "$1" | grep -q .
+fi

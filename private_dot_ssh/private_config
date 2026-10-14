@@ -1,5 +1,3 @@
-{{- /* Machines without Tailscale (work ones) reach the tailnet-only hosts through west */ -}}
-{{- $onTailnet := or (lookPath "tailscale") (stat "/Applications/Tailscale.app") -}}
 # Managed by chezmoi. Machine-specific hosts (work servers and the like) go in
 # ~/.ssh/config.local, which is read first and is not in the public repo.
 Include ~/.ssh/config.local
@@ -7,13 +5,12 @@ Include ~/.ssh/config.local
 # Reachable from anywhere
 Host atom east minecraft ro west
     HostName %h.handled.it
-{{- if not $onTailnet }}
 
-# Tailscale only, and this machine isn't on the tailnet: go through west,
-# which resolves the short names
-Host blox1 blox2 macmini t420s
+# Tailscale only, named without the tailnet suffix. Connect directly when this
+# machine can resolve the name (on the tailnet right now); otherwise go
+# through west, which can.
+Match host blox1,blox2,macmini,t420s !exec "~/.local/bin/resolves %h"
     ProxyJump west
-{{- end }}
 
 # My own machines: same user everywhere, and the agent comes along
 Host atom east minecraft ro west blox1 blox2 macmini t420s
