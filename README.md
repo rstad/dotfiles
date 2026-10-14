@@ -11,8 +11,10 @@ Managed with [chezmoi](https://chezmoi.io). New machine:
 | `@gmail.com` or `@users.noreply.github.com` | personal | Bitwarden |
 | anything else| work     | 1Password                    |
 
-- Commits are always signed with whatever key the ssh agent offers: the
-  password manager's agent locally, or the forwarded agent over ssh.
+- Commits are always signed with a key from the ssh agent: the password
+  manager's agent locally, or the forwarded agent over ssh. The key has to
+  belong to the GitHub account that matches the commit email, otherwise the
+  commit is refused. `SIGN_WITH_ANY_KEY=1 git commit ...` overrides that.
 - `~/.ssh/authorized_keys` accepts the keys of both GitHub accounts
   (`rstad`, `chimerstad`), fetched at apply time.
 

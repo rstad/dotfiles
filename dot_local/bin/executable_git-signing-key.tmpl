@@ -1,0 +1,42 @@
+#!/bin/sh
+# git runs this (gpg.ssh.defaultKeyCommand) to choose the commit signing key.
+#
+# Prints the SSH agent key that belongs to the GitHub account matching the
+# commit email: a gmail or GitHub noreply address is personal, anything else is
+# work. If the agent doesn't hold that account's key it fails, so a commit is
+# never signed with the wrong identity by accident.
+#
+# To sign with whatever key the agent has anyway:
+#     SIGN_WITH_ANY_KEY=1 git commit ...
+signers=~/.ssh/allowed_signers
+
+fail() {
+    echo "git-signing-key: $*" >&2
+    exit 1
+}
+
+agent_keys=$(ssh-add -L 2>/dev/null) ||
+    fail "the SSH agent has no keys (locked, or not forwarded?)"
+
+if [ -n "$SIGN_WITH_ANY_KEY" ]; then
+    printf '%s\n' "$agent_keys" | sed -n '1s/^/key::/p'
+    exit 0
+fi
+
+email=$(git var GIT_COMMITTER_IDENT | sed 's/.*<\(.*\)>.*/\1/')
+case $(printf '%s' "$email" | tr '[:upper:]' '[:lower:]') in
+    *@gmail.com | *@users.noreply.github.com) account={{ .github.personal }} ;;
+    *) account={{ .github.work }} ;;
+esac
+
+# allowed_signers lines look like: * <type> <key> <account>
+key=$(printf '%s\n' "$agent_keys" | while read -r type blob _; do
+    awk -v type="$type" -v blob="$blob" -v account="$account" \
+        '$2 == type && $3 == blob && $4 == account { print "key::" $2 " " $3 }' "$signers"
+done | sed -n 1p)
+
+[ -n "$key" ] || fail "commits as $email need a $account key, but the agent only has:
+$(printf '%s\n' "$agent_keys" | sed 's/^[^ ]* [^ ]* */    /')
+Connect with the right agent, or override: SIGN_WITH_ANY_KEY=1 git commit ..."
+
+printf '%s\n' "$key"

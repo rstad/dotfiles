@@ -1,2 +1,2 @@
 {{- $existing := joinPath .chezmoi.destDir ".ssh/authorized_keys" -}}
-{{- output "sh" "-c" (includeTemplate "github-keys.sh" .) "sh" $existing "" (join " " .githubUsers) -}}
+{{- output "sh" "-c" (includeTemplate "github-keys.sh" .) "sh" $existing "" (list .github.personal .github.work | join " ") -}}

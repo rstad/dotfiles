@@ -1,4 +1,5 @@
-# Print the public SSH keys of the given GitHub users, one per line.
+# Print the public SSH keys of the given GitHub users, one per line, each with
+# the account name as its comment.
 # usage: sh -c <this> sh <existing-file> <line-prefix> "<user> <user>..."
 #
 # Reads https://github.com/<user>.keys, which needs no token and has no API
@@ -12,11 +13,11 @@ for user in $users; do
         failed=$user
         break
     fi
-    keys="$keys$fetched
+    keys="$keys$(printf '%s\n' "$fetched" | sed "s/^/$prefix/; s/\$/ $user/")
 "
 done
 if [ -z "$failed" ]; then
-    printf '%s' "$keys" | sed "s/^/$prefix/"
+    printf '%s' "$keys"
 elif [ -s "$existing" ]; then
     echo "chezmoi: could not fetch GitHub keys for $failed, keeping $existing as it is" >&2
     cat "$existing"

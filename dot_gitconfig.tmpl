@@ -6,7 +6,7 @@
 [gpg "ssh"]
 	# Sign with whatever key the ssh agent offers: the password manager's
 	# agent locally, or the forwarded one over ssh
-	defaultKeyCommand = ssh-add -L
+	defaultKeyCommand = {{ .chezmoi.homeDir }}/.local/bin/git-signing-key
 	allowedSignersFile = {{ .chezmoi.homeDir }}/.ssh/allowed_signers
 [commit]
 	gpgsign = true

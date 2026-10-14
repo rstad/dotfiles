@@ -2,5 +2,8 @@
 # loaded by tpm via .tmux.conf. tmux-open is extra, loaded only outside ssh.
 tmuxPlugins = ["tmux-pain-control", "tmux-sidebar", "tmux-yank", "tmux-resurrect"]
 
-# GitHub accounts whose SSH keys may log in and whose signatures are trusted
-githubUsers = ["rstad", "chimerstad"]
+# GitHub accounts. Both accounts' SSH keys may log in and are trusted signers;
+# commits are signed with the key of the account that matches the commit email.
+[github]
+    personal = "rstad"
+    work = "chimerstad"
