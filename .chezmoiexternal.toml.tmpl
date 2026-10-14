@@ -6,13 +6,15 @@
     refreshPeriod = "168h"
 {{- end }}
 
-{{- /* zellij: prebuilt Linux binary (Debian/Ubuntu packages are stale); Macs use brew */}}
+{{- /* zellij: prebuilt release binary. Debian/Ubuntu packages are stale, and
+       brew builds it from source on older Intel Macs */}}
 {{- $zellijArch := get (dict "amd64" "x86_64" "arm64" "aarch64") .chezmoi.arch }}
-{{- if and (eq .chezmoi.os "linux") $zellijArch }}
+{{- $zellijOS := get (dict "linux" "unknown-linux-musl" "darwin" "apple-darwin") .chezmoi.os }}
+{{- if and $zellijArch $zellijOS }}
 
 [".local/bin/zellij"]
     type = "archive-file"
-    url = "https://github.com/zellij-org/zellij/releases/latest/download/zellij-{{ $zellijArch }}-unknown-linux-musl.tar.gz"
+    url = "https://github.com/zellij-org/zellij/releases/latest/download/zellij-{{ $zellijArch }}-{{ $zellijOS }}.tar.gz"
     path = "zellij"
     executable = true
     refreshPeriod = "168h"
