@@ -28,6 +28,12 @@ if [ -n "$missing" ]; then
     $sudo apt-get update -qq
     $sudo env DEBIAN_FRONTEND=noninteractive apt-get install -y -qq $missing
 fi
+
+# Debian/Ubuntu install fd and bat as fdfind and batcat. These links aren't
+# chezmoi entries because on Macs the same paths hold release binaries.
+mkdir -p ~/.local/bin
+ln -sfn /usr/bin/fdfind ~/.local/bin/fd
+ln -sfn /usr/bin/batcat ~/.local/bin/bat
 {{- else if eq .chezmoi.os "darwin" -}}
 {{- $formulae := .packages.brew }}
 {{- if eq .chezmoi.arch "amd64" }}{{ $formulae = concat $formulae .packages.brewIntel }}{{ end -}}
