@@ -9,7 +9,24 @@ export VISUAL=$EDITOR
 # ~/.ssh/rc maintains, so long-lived tmux/zellij sessions survive reconnects.
 # Locally, use the {{ .passwordManager }} ssh agent.
 if [[ -n $SSH_CONNECTION ]]; then
-  [[ -S ~/.ssh/agent.sock ]] && export SSH_AUTH_SOCK=~/.ssh/agent.sock
+  # The link follows the newest login, so it dies if that connection closes
+  # while an older one is still up. Before each prompt, if the agent is gone,
+  # repoint the link at the newest forwarded socket that still answers.
+  _agent_link_check() {
+    [[ -S $SSH_AUTH_SOCK ]] && return
+    local sock
+    for sock in /tmp/ssh-*/agent.*(N=Uom); do
+      SSH_AUTH_SOCK=$sock ssh-add -l >/dev/null 2>&1
+      (( $? == 2 )) && continue  # 2: no agent listening
+      ln -sf $sock ~/.ssh/agent.sock
+      break
+    done
+    [[ -S ~/.ssh/agent.sock ]] && export SSH_AUTH_SOCK=~/.ssh/agent.sock
+  }
+  export SSH_AUTH_SOCK=~/.ssh/agent.sock
+  _agent_link_check
+  autoload -Uz add-zsh-hook
+  add-zsh-hook precmd _agent_link_check
 else
   for sock in \
 {{- if .personal }}
