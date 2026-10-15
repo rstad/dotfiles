@@ -10,20 +10,43 @@ tmuxPlugins = ["tmux-pain-control", "tmux-sidebar", "tmux-yank", "tmux-resurrect
 # {rustos} unknown-linux-musl/apple-darwin, {glow} x86_64/arm64.
 # repo@tag pins a release instead of following the latest.
 releases = [
-    # binary    repo                  platforms       release file                            path inside it
-    ["zellij",   "zellij-org/zellij",  "linux darwin", "zellij-{rust}-{rustos}.tar.gz",        "zellij"],
-    ["starship", "starship/starship",  "linux darwin", "starship-{rust}-{rustos}.tar.gz",      "starship"],
-    ["fzf",      "junegunn/fzf",       "linux darwin", "fzf-{ver}-{os}_{go}.tar.gz",           "fzf"],
-    ["glow",     "charmbracelet/glow", "linux darwin", "glow_{ver}_{Os}_{glow}.tar.gz",        "glow_{ver}_{Os}_{glow}/glow"],
-    ["dust",     "bootandy/dust",      "linux darwin", "dust-{tag}-{rust}-{rustos}.tar.gz",    "dust-{tag}-{rust}-{rustos}/dust"],
-    ["rg",       "BurntSushi/ripgrep", "darwin",       "ripgrep-{ver}-{rust}-{rustos}.tar.gz", "ripgrep-{ver}-{rust}-{rustos}/rg"],
-    ["fd",       "sharkdp/fd",         "darwin",       "fd-{tag}-{rust}-{rustos}.tar.gz",      "fd-{tag}-{rust}-{rustos}/fd"],
-    ["bat",      "sharkdp/bat",        "darwin",       "bat-{tag}-{rust}-{rustos}.tar.gz",     "bat-{tag}-{rust}-{rustos}/bat"],
-    ["zoxide",   "ajeetdsouza/zoxide", "darwin",       "zoxide-{ver}-{rust}-{rustos}.tar.gz",  "zoxide"],
-    ["gh",       "cli/cli",            "darwin",       "gh_{ver}_macOS_{go}.zip",              "gh_{ver}_macOS_{go}/bin/gh"],
-    ["delta",    "dandavison/delta",   "darwin/arm64", "delta-{ver}-{rust}-{rustos}.tar.gz",   "delta-{ver}-{rust}-{rustos}/delta"],
+    # binary, repo, platforms, release file, path of the binary inside it,
+    # path of its man page inside it ("" if it has none)
+    ["zellij",   "zellij-org/zellij",  "linux darwin", "zellij-{rust}-{rustos}.tar.gz",
+                 "zellij", ""],
+    ["starship", "starship/starship",  "linux darwin", "starship-{rust}-{rustos}.tar.gz",
+                 "starship", ""],
+    ["fzf",      "junegunn/fzf",       "linux darwin", "fzf-{ver}-{os}_{go}.tar.gz",
+                 "fzf", ""],
+    ["glow",     "charmbracelet/glow", "linux darwin", "glow_{ver}_{Os}_{glow}.tar.gz",
+                 "glow_{ver}_{Os}_{glow}/glow", "glow_{ver}_{Os}_{glow}/manpages/glow.1.gz"],
+    ["dust",     "bootandy/dust",      "linux darwin", "dust-{tag}-{rust}-{rustos}.tar.gz",
+                 "dust-{tag}-{rust}-{rustos}/dust", ""],
+    ["rg",       "BurntSushi/ripgrep", "darwin",       "ripgrep-{ver}-{rust}-{rustos}.tar.gz",
+                 "ripgrep-{ver}-{rust}-{rustos}/rg", "ripgrep-{ver}-{rust}-{rustos}/doc/rg.1"],
+    ["fd",       "sharkdp/fd",         "darwin",       "fd-{tag}-{rust}-{rustos}.tar.gz",
+                 "fd-{tag}-{rust}-{rustos}/fd", "fd-{tag}-{rust}-{rustos}/fd.1"],
+    ["bat",      "sharkdp/bat",        "darwin",       "bat-{tag}-{rust}-{rustos}.tar.gz",
+                 "bat-{tag}-{rust}-{rustos}/bat", "bat-{tag}-{rust}-{rustos}/bat.1"],
+    ["zoxide",   "ajeetdsouza/zoxide", "darwin",       "zoxide-{ver}-{rust}-{rustos}.tar.gz",
+                 "zoxide", "man/man1/zoxide.1"],
+    # gh has a page per subcommand too; those repeat `gh <command> --help`
+    ["gh",       "cli/cli",            "darwin",       "gh_{ver}_macOS_{go}.zip",
+                 "gh_{ver}_macOS_{go}/bin/gh", "gh_{ver}_macOS_{go}/share/man/man1/gh.1"],
+    ["delta",    "dandavison/delta",   "darwin/arm64", "delta-{ver}-{rust}-{rustos}.tar.gz",
+                 "delta-{ver}-{rust}-{rustos}/delta", ""],
     # Last Intel Mac build; brew would compile Rust and LLVM from source
-    ["delta",    "dandavison/delta@0.18.2", "darwin/amd64", "delta-{ver}-{rust}-{rustos}.tar.gz", "delta-{ver}-{rust}-{rustos}/delta"],
+    ["delta",    "dandavison/delta@0.18.2", "darwin/amd64", "delta-{ver}-{rust}-{rustos}.tar.gz",
+                 "delta-{ver}-{rust}-{rustos}/delta", ""],
+]
+
+# Files a release download leaves out, fetched from the project's repo at the
+# same tag as its binary (on the platforms that get the binary, Linux and Macs)
+repoFiles = [
+    # target                                   repo             path in the repo
+    [".local/share/zsh/site-functions/_dust", "bootandy/dust", "completions/_dust"],
+    [".local/share/man/man1/dust.1",          "bootandy/dust", "man-page/dust.1"],
+    [".local/share/man/man1/fzf.1",           "junegunn/fzf",  "man/man1/fzf.1"],
 ]
 
 # GitHub accounts. Both accounts' SSH keys may log in and are trusted signers;

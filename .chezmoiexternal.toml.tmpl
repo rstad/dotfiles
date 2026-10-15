@@ -47,17 +47,29 @@
     url = "https://github.com/{{ $repo }}/releases/download/{{ $tag }}/{{ $file }}"
     path = "{{ $path }}"
     executable = true
+{{-       $man := index . 5 }}
+{{-       if $man }}
+{{-         range $k, $v := merge (dict "{tag}" $tag "{ver}" (trimPrefix "v" $tag)) $vars }}
+{{-           $man = replace $k $v $man }}
+{{-         end }}
+
+[".local/share/man/man1/{{ base $man }}"]
+    type = "archive-file"
+    url = "https://github.com/{{ $repo }}/releases/download/{{ $tag }}/{{ $file }}"
+    path = "{{ $man }}"
+{{-       end }}
 {{-     end }}
 {{-   end }}
 {{- end }}
 
-{{- /* dust's binary can't print its zsh completion; it lives in the repo,
-       at the same tag as the binary (see run_after_zsh-completions.sh) */}}
-{{- $tag := output "sh" "-c" $latest "sh" "bootandy/dust" | trim }}
-{{- if $tag }}
+{{- /* Files the release downloads leave out (repoFiles in .chezmoidata.toml) */}}
+{{- range .repoFiles }}
+{{-   $tag := output "sh" "-c" $latest "sh" (index . 1) | trim }}
+{{-   if $tag }}
 
-[".local/share/zsh/site-functions/_dust"]
+["{{ index . 0 }}"]
     type = "file"
-    url = "https://raw.githubusercontent.com/bootandy/dust/{{ $tag }}/completions/_dust"
+    url = "https://raw.githubusercontent.com/{{ index . 1 }}/{{ $tag }}/{{ index . 2 }}"
+{{-   end }}
 {{- end }}
 {{- end }}
