@@ -91,6 +91,12 @@ if command -v fzf >/dev/null; then
 fi
 # zoxide: `z part-of-dir` jumps to the best match of directories visited before
 if command -v zoxide >/dev/null; then eval "$(zoxide init zsh)"; fi
+# Man pages highlighted by bat, still paged by less. MANROFFOPT=-c makes
+# groff use plain overstrikes, which col strips, instead of escape codes.
+if command -v bat >/dev/null; then
+  export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+  export MANROFFOPT=-c
+fi
 
 if command -v starship >/dev/null; then
   eval "$(starship init zsh)"
