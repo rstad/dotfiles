@@ -50,7 +50,9 @@ SAVEHIST=50000
 HISTFILE=~/.zsh_history
 setopt histignorealldups sharehistory extendedhistory histignorespace
 
-# Completion
+# Completion. ~/.local/share/zsh/site-functions holds the ones
+# run_after_zsh-completions.sh generates for the release binaries.
+fpath=(~/.local/share/zsh/site-functions $fpath)
 autoload -Uz compinit
 compinit
 zstyle ':completion:*' menu select

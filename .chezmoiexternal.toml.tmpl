@@ -50,4 +50,14 @@
 {{-     end }}
 {{-   end }}
 {{- end }}
+
+{{- /* dust's binary can't print its zsh completion; it lives in the repo,
+       at the same tag as the binary (see run_after_zsh-completions.sh) */}}
+{{- $tag := output "sh" "-c" $latest "sh" "bootandy/dust" | trim }}
+{{- if $tag }}
+
+[".local/share/zsh/site-functions/_dust"]
+    type = "file"
+    url = "https://raw.githubusercontent.com/bootandy/dust/{{ $tag }}/completions/_dust"
+{{- end }}
 {{- end }}
