@@ -7,7 +7,8 @@ tmuxPlugins = ["tmux-pain-control", "tmux-sidebar", "tmux-yank", "tmux-resurrect
 # old; Macs use them because Homebrew no longer builds Intel bottles.
 # Placeholders: {tag} release tag, {ver} tag without "v", {os} linux/darwin,
 # {Os} Linux/Darwin, {go} amd64/arm64, {rust} x86_64/aarch64,
-# {rustos} unknown-linux-musl/apple-darwin, {glow} x86_64/arm64.
+# {rustos} unknown-linux-musl/apple-darwin, {glow} x86_64/arm64,
+# {tldr} linux-x86_64-musl/macos-aarch64 and so on.
 # repo@tag pins a release instead of following the latest.
 releases = [
     # binary, repo, platforms, release file, path of the binary inside it,
@@ -33,6 +34,9 @@ releases = [
     # gh has a page per subcommand too; those repeat `gh <command> --help`
     ["gh",       "cli/cli",            "darwin",       "gh_{ver}_macOS_{go}.zip",
                  "gh_{ver}_macOS_{go}/bin/gh", "gh_{ver}_macOS_{go}/share/man/man1/gh.1"],
+    # A bare binary, not an archive: the path inside is ""
+    ["tldr",     "tealdeer-rs/tealdeer", "linux darwin", "tealdeer-{tldr}",
+                 "", ""],
     ["delta",    "dandavison/delta",   "darwin/arm64", "delta-{ver}-{rust}-{rustos}.tar.gz",
                  "delta-{ver}-{rust}-{rustos}/delta", ""],
     # Last Intel Mac build; brew would compile Rust and LLVM from source
@@ -40,13 +44,15 @@ releases = [
                  "delta-{ver}-{rust}-{rustos}/delta", ""],
 ]
 
-# Files a release download leaves out, fetched from the project's repo at the
-# same tag as its binary (on the platforms that get the binary, Linux and Macs)
+# Files a release download leaves out, fetched at the same tag as the binary
+# (on the platforms that get it, Linux and Macs): from the project's repo
+# (raw/...) or as a separate release asset (releases/download/...)
 repoFiles = [
-    # target                                   repo             path in the repo
-    [".local/share/zsh/site-functions/_dust", "bootandy/dust", "completions/_dust"],
-    [".local/share/man/man1/dust.1",          "bootandy/dust", "man-page/dust.1"],
-    [".local/share/man/man1/fzf.1",           "junegunn/fzf",  "man/man1/fzf.1"],
+    # target                                   repo                    URL path under github.com/<repo>/
+    [".local/share/zsh/site-functions/_dust", "bootandy/dust",        "raw/{tag}/completions/_dust"],
+    [".local/share/man/man1/dust.1",          "bootandy/dust",        "raw/{tag}/man-page/dust.1"],
+    [".local/share/man/man1/fzf.1",           "junegunn/fzf",         "raw/{tag}/man/man1/fzf.1"],
+    [".local/share/zsh/site-functions/_tldr", "tealdeer-rs/tealdeer", "releases/download/{tag}/completions_zsh"],
 ]
 
 # GitHub accounts. Both accounts' SSH keys may log in and are trusted signers;

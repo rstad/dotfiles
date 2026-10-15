@@ -21,7 +21,8 @@
       "{go}" .chezmoi.arch
       "{rust}" $rust
       "{rustos}" $rustos
-      "{glow}" (get (dict "amd64" "x86_64" "arm64" "arm64") .chezmoi.arch) }}
+      "{glow}" (get (dict "amd64" "x86_64" "arm64" "arm64") .chezmoi.arch)
+      "{tldr}" (get (dict "linux" (printf "linux-%s-musl" $rust) "darwin" (printf "macos-%s" $rust)) .chezmoi.os) }}
 {{- $latest := includeTemplate "latest-release.sh" . }}
 {{- range .releases }}
 {{-   $platforms := splitList " " (index . 2) }}
@@ -43,9 +44,14 @@
 {{-       end }}
 
 [".local/bin/{{ index . 0 }}"]
+{{-       if $path }}
     type = "archive-file"
     url = "https://github.com/{{ $repo }}/releases/download/{{ $tag }}/{{ $file }}"
     path = "{{ $path }}"
+{{-       else }}
+    type = "file"
+    url = "https://github.com/{{ $repo }}/releases/download/{{ $tag }}/{{ $file }}"
+{{-       end }}
     executable = true
 {{-       $man := index . 5 }}
 {{-       if $man }}
@@ -69,7 +75,7 @@
 
 ["{{ index . 0 }}"]
     type = "file"
-    url = "https://raw.githubusercontent.com/{{ index . 1 }}/{{ $tag }}/{{ index . 2 }}"
+    url = "https://github.com/{{ index . 1 }}/{{ index . 2 | replace "{tag}" $tag }}"
 {{-   end }}
 {{- end }}
 {{- end }}

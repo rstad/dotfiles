@@ -2,7 +2,7 @@
 # zsh completions for tools whose installs don't put one where zsh looks: the
 # release binaries, and Debian's fd and bat (packaged as fdfind and batcat).
 # Regenerated after every apply (about 0.1s) so they match what's installed.
-# dust can't print its own; .chezmoiexternal fetches it into the same place.
+# dust and tldr can't print theirs; .chezmoiexternal fetches them (repoFiles).
 dir=$HOME/.local/share/zsh/site-functions
 mkdir -p "$dir"
 

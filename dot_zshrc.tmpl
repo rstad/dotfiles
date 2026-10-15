@@ -91,6 +91,8 @@ if command -v fzf >/dev/null; then
 fi
 # zoxide: `z part-of-dir` jumps to the best match of directories visited before
 if command -v zoxide >/dev/null; then eval "$(zoxide init zsh)"; fi
+# tldr (tealdeer): read its config from ~/.config on Macs too
+export TEALDEER_CONFIG_DIR=~/.config/tealdeer
 # Man pages highlighted by bat, still paged by less. MANROFFOPT=-c makes
 # groff use plain overstrikes, which col strips, instead of escape codes.
 if command -v bat >/dev/null; then
