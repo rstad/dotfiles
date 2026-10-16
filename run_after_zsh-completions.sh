@@ -25,6 +25,7 @@ gen delta delta --generate-completion zsh
 gen glow glow completion zsh
 gen zellij zellij setup --generate-completion zsh
 gen starship starship completions zsh
+gen atuin atuin gen-completions --shell zsh
 
 # Debian's bat writes its completion for "batcat"; claim both names
 if [ -f "$dir/_bat" ]; then

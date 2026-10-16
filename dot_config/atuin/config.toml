@@ -1,0 +1,18 @@
+# Sync is per host: `atuin login` (key in the password manager). Old zsh
+# history comes in by hand with `atuin import zsh`, once it's been scrubbed.
+
+# Never record commands that look like tokens or passwords
+secrets_filter = true
+history_filter = [
+  "(?i)passw",
+  "(?i)token=",
+  "(?i)bearer ",
+]
+
+# Updates come from the dotfiles (weekly release check)
+update_check = false
+
+style = "compact"
+inline_height = 20
+# Enter puts the command on the prompt to check or edit; Enter again runs it
+enter_accept = false

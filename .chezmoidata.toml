@@ -23,6 +23,8 @@ releases = [
                  "glow_{ver}_{Os}_{glow}/glow", "glow_{ver}_{Os}_{glow}/manpages/glow.1.gz"],
     ["dust",     "bootandy/dust",      "linux darwin", "dust-{tag}-{rust}-{rustos}.tar.gz",
                  "dust-{tag}-{rust}-{rustos}/dust", ""],
+    ["atuin",    "atuinsh/atuin",      "linux darwin", "atuin-{rust}-{rustos}.tar.gz",
+                 "atuin-{rust}-{rustos}/atuin", ""],
     ["rg",       "BurntSushi/ripgrep", "darwin",       "ripgrep-{ver}-{rust}-{rustos}.tar.gz",
                  "ripgrep-{ver}-{rust}-{rustos}/rg", "ripgrep-{ver}-{rust}-{rustos}/doc/rg.1"],
     ["fd",       "sharkdp/fd",         "darwin",       "fd-{tag}-{rust}-{rustos}.tar.gz",
