@@ -28,6 +28,23 @@ if [[ -n $SSH_CONNECTION ]]; then
   autoload -Uz add-zsh-hook
   add-zsh-hook precmd _agent_link_check
 else
+{{- if and (eq .chezmoi.os "linux") (contains "microsoft" (lower .chezmoi.kernel.osrelease)) (eq .passwordManager "1password") }}
+  # WSL: 1Password's agent is a Windows pipe. Bridge it to a socket here with
+  # socat (apt) and npiperelay.exe (winget), unless the bridge is already up.
+  if ! pgrep -u $UID -f "UNIX-LISTEN:$HOME/.1password/agent.sock" >/dev/null; then
+    if ! command -v npiperelay.exe >/dev/null; then
+      print -u2 "ssh agent: npiperelay.exe not found, so ssh can't reach 1Password." \
+        "In PowerShell: winget install albertony.npiperelay, then restart Windows Terminal."
+    elif ! command -v socat >/dev/null; then
+      print -u2 "ssh agent: socat not found, so ssh can't reach 1Password. Run: sudo apt install socat"
+    else
+      mkdir -p -m 700 ~/.1password
+      (setsid socat UNIX-LISTEN:$HOME/.1password/agent.sock,fork,unlink-early \
+        EXEC:"npiperelay.exe -ei -s //./pipe/openssh-ssh-agent",nofork &) >/dev/null 2>&1
+      for i in {1..20}; do [[ -S ~/.1password/agent.sock ]] && break; sleep 0.05; done
+    fi
+  fi
+{{- end }}
   for sock in \
 {{- if .personal }}
     ~/.bitwarden-ssh-agent.sock \

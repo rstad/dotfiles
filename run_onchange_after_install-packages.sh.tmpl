@@ -1,8 +1,13 @@
 {{- /* Install whatever on the list is missing. Runs after the files are in place
        and again whenever the list changes; if it fails, the next update retries. */ -}}
 {{- if and (eq .chezmoi.os "linux") (lookPath "apt-get") -}}
+{{- $apt := .packages.apt -}}
+{{- /* WSL with 1Password: socat bridges the Windows agent (see .zshrc) */ -}}
+{{- if and (contains "microsoft" (lower .chezmoi.kernel.osrelease)) (eq .passwordManager "1password") -}}
+{{-   $apt = concat $apt .packages.wsl1password -}}
+{{- end -}}
 #!/bin/sh
-# Packages: {{ .packages.apt | join " " }}
+# Packages: {{ $apt | join " " }}
 set -e
 sudo=sudo
 [ "$(id -u)" = 0 ] && sudo=
@@ -20,7 +25,7 @@ if [ ! -f /etc/apt/sources.list.d/github-cli.list ]; then
     missing=" gh"  # also replaces a distro gh that's already installed
 fi
 
-for pkg in {{ .packages.apt | join " " }}; do
+for pkg in {{ $apt | join " " }}; do
     dpkg-query -W -f '${Status}' "$pkg" 2> /dev/null | grep -q 'ok installed' || missing="$missing $pkg"
 done
 if [ -n "$missing" ]; then
