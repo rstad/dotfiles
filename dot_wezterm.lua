@@ -83,4 +83,14 @@ if is_windows then
   config.keys = keys
 end
 
+-- Link detection, used on Shift+click inside zellij or herdr (a plain click
+-- goes to them). The built-in rule keeps a trailing ")", which breaks
+-- markdown-style text(https://...). This one allows matched (...) pairs, as in
+-- Wikipedia links, but never ends on an unmatched ")" or trailing punctuation.
+-- [=[ ]=] quoting because the regex contains "]]".
+config.hyperlink_rules = {
+  { regex = [=[\b\w+://(?:[^\s()<>\[\]]|\([^\s()<>]*\))*(?:[^\s()<>\[\].,;:!?'"]|\([^\s()<>]*\))]=], format = '$0' },
+  { regex = [=[\b\w+@[\w-]+(\.[\w-]+)+\b]=], format = 'mailto:$0' },
+}
+
 return config
