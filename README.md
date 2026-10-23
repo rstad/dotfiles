@@ -18,7 +18,7 @@ Managed with [chezmoi](https://chezmoi.io). New machine:
 - `~/.ssh/authorized_keys` accepts the keys of both GitHub accounts
   (`rstad`, `chimerstad`), fetched at apply time.
 - Tools (ripgrep, fd, fzf, bat, zoxide, eza, delta, dust, glow, gh, tldr, atuin,
-  starship, zellij) are installed when missing: from apt or brew (`.chezmoidata.toml`),
+  piknik, starship, zellij) are installed when missing: from apt or brew (`.chezmoidata.toml`),
   or as release binaries in `~/.local/bin`, refreshed weekly
   (`.chezmoiexternal.toml.tmpl`). Upgrading what apt and brew installed is
   left to them.

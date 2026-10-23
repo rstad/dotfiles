@@ -44,6 +44,14 @@ releases = [
     # Last Intel Mac build; brew would compile Rust and LLVM from source
     ["delta",    "dandavison/delta@0.18.2", "darwin/amd64", "delta-{ver}-{rust}-{rustos}.tar.gz",
                  "delta-{ver}-{rust}-{rustos}/delta", ""],
+    # Network clipboard. No Linux arm64 build. ~/.piknik.toml holds the shared
+    # keys, so it's copied to each host by hand, never kept in this repo.
+    ["piknik",   "jedisct1/piknik",    "linux/amd64",  "piknik-linux_x86_64-{ver}.tar.gz",
+                 "linux-x86_64/piknik", ""],
+    ["piknik",   "jedisct1/piknik",    "darwin/arm64", "piknik-macos-{ver}.tar.gz",
+                 "macos/piknik", ""],
+    ["piknik",   "jedisct1/piknik",    "darwin/amd64", "piknik-macos-intel-{ver}.tar.gz",
+                 "macos/piknik", ""],
 ]
 
 # Files a release download leaves out, fetched at the same tag as the binary

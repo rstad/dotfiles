@@ -112,6 +112,11 @@ if command -v zoxide >/dev/null; then eval "$(zoxide init zsh)"; fi
 # atuin: Ctrl-R searches its history database (after fzf, so it gets Ctrl-R);
 # the up arrow stays plain zsh history
 if command -v atuin >/dev/null; then eval "$(atuin init zsh --disable-up-arrow)"; fi
+# piknik: clipboard shared between hosts. `cmd | pkc` copies, `pkp` pastes,
+# `pkm` pastes and clears, `pkz` clears.
+if command -v piknik >/dev/null; then
+  alias pkc='piknik -copy' pkp='piknik -paste' pkm='piknik -move' pkz='piknik -copy < /dev/null'
+fi
 # tldr (tealdeer): read its config from ~/.config on Macs too
 export TEALDEER_CONFIG_DIR=~/.config/tealdeer
 # Man pages highlighted by bat, still paged by less. MANROFFOPT=-c makes
