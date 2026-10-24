@@ -1,0 +1,27 @@
+#!/bin/sh
+# pkshot (Mac only): drag out a screenshot and put the PNG on the piknik
+# clipboard, so another host can grab it with `pkp > /tmp/shot.png`.
+# Space while selecting grabs a whole window; Esc cancels. Normal screenshot
+# shortcuts are untouched. Bind it to a hotkey with a Shortcuts
+# "Run Shell Script" action (see README).
+
+# Shortcuts runs scripts with a bare PATH
+PATH="$HOME/.local/bin:/opt/homebrew/bin:/usr/local/bin:$PATH"
+
+tmp=$(mktemp -t pkshot) || exit 1
+trap 'rm -f "$tmp"' EXIT
+
+notify() {
+    osascript -e "display notification \"$1\" with title \"pkshot\""
+}
+
+# -i: interactive selection, -o: no window shadow
+screencapture -i -o -t png "$tmp"
+[ -s "$tmp" ] || exit 0    # cancelled
+
+if piknik -copy < "$tmp"; then
+    notify "Screenshot sent to piknik"
+else
+    notify "piknik copy failed"
+    exit 1
+fi

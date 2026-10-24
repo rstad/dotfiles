@@ -30,3 +30,10 @@ This repo is public, so anything machine- or work-specific goes in files
 that are sourced but never committed: `~/.zshrc.local`, `~/.gitconfig.local`.
 
 Day to day: `chezmoi update` pulls and applies; `chezmoi diff` previews.
+
+`pkshot` (Mac only) takes a screenshot straight to piknik, so another host can
+`pkp > /tmp/shot.png`. Give it a hotkey once per Mac: in Shortcuts, make a
+shortcut with one Run Shell Script action, `~/.local/bin/pkshot`, then add a
+keyboard shortcut in its details (e.g. Ctrl+Option+Cmd+4). The first run needs
+Shortcuts → Settings → Advanced → Allow Running Scripts, and Screen Recording
+permission for Shortcuts.

@@ -1,6 +1,7 @@
 README.md
 
-{{- /* Terminal config; on WSL a script copies it to the Windows home instead */}}
+{{- /* Mac-only files. On WSL a script copies .wezterm.lua to the Windows home instead */}}
 {{- if ne .chezmoi.os "darwin" }}
 .wezterm.lua
+.local/bin/pkshot
 {{- end }}
