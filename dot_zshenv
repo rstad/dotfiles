@@ -1,0 +1,15 @@
+# Read by every zsh, including non-interactive ones like `ssh host cmd`.
+# Keep it silent and fast: anything printed here breaks scp, rsync and git over ssh.
+# Interactive setup belongs in .zshrc.
+
+typeset -U path
+
+# Homebrew isn't on a Mac's PATH for `ssh host cmd`. Apple Silicon (/opt/homebrew)
+# is added last so it ends up ahead of Intel (/usr/local).
+if [[ $OSTYPE == darwin* ]]; then
+  for d in /usr/local/bin /opt/homebrew/bin; do
+    [[ -d $d ]] && path=($d $path)
+  done
+fi
+
+path=(~/bin ~/.local/bin $path)
