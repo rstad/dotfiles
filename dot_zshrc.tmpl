@@ -117,6 +117,10 @@ if command -v atuin >/dev/null; then eval "$(atuin init zsh --disable-up-arrow)"
 if command -v piknik >/dev/null; then
   alias pkc='piknik -copy' pkp='piknik -paste' pkm='piknik -move' pkz='piknik -copy < /dev/null'
 fi
+# glow: `gloww file.md` wraps at the full terminal width (measured each run)
+if command -v glow >/dev/null; then
+  alias gloww='glow -w $(tput cols)'
+fi
 # tldr (tealdeer): read its config from ~/.config on Macs too
 export TEALDEER_CONFIG_DIR=~/.config/tealdeer
 # Man pages highlighted by bat, still paged by less. MANROFFOPT=-c makes
