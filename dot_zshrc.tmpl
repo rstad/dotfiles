@@ -44,6 +44,9 @@ else
       for i in {1..20}; do [[ -S ~/.1password/agent.sock ]] && break; sleep 0.05; done
     fi
   fi
+  # Export it even if the bridge isn't up yet, so a shell started early (and
+  # anything it launches, like herdr's ssh) still uses it once it is.
+  export SSH_AUTH_SOCK=~/.1password/agent.sock
 {{- end }}
   for sock in \
 {{- if .personal }}
