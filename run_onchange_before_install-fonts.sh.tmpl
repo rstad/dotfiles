@@ -1,8 +1,9 @@
 {{- /* The terminal font from `font` in .chezmoidata.toml. Macs get it in
        ~/Library/Fonts; WSL installs it for the Windows user, where WezTerm and
        the zellij window run. Headless Linux hosts skip it: the font is drawn by
-       the terminal you sit at. Re-runs when the release tag or settings change;
-       if it fails, the next apply retries. */ -}}
+       the terminal you sit at. Runs before chezmoi writes files, so the font is
+       there when WezTerm reloads the new config. Re-runs when the release tag
+       or settings change; if it fails, the next apply retries. */ -}}
 {{- $wsl := and (eq .chezmoi.os "linux") (contains "microsoft" (lower .chezmoi.kernel.osrelease)) -}}
 {{- if or (eq .chezmoi.os "darwin") $wsl -}}
 {{- $repo := .font.repo -}}

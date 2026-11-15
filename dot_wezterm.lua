@@ -5,7 +5,7 @@ local config = wezterm.config_builder()
 local is_windows = wezterm.target_triple:find('windows') ~= nil
 
 config.color_scheme = 'idleToes'
--- Installed by run_onchange_after_install-fonts (font in .chezmoidata.toml).
+-- Installed by run_onchange_before_install-fonts (font in .chezmoidata.toml).
 -- Its Chinese characters are exactly two cells wide. WezTerm's bundled
 -- JetBrains Mono, Nerd Font symbols and emoji stay as fallbacks.
 config.font = wezterm.font 'Sarasa Term SC'

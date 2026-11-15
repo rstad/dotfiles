@@ -82,7 +82,7 @@ repoFiles = [
     # WSL hosts with 1Password only: bridges the Windows ssh agent
     wsl1password = ["socat"]
 
-# Terminal font, installed by run_onchange_after_install-fonts on the machines
+# Terminal font, installed by run_onchange_before_install-fonts on the machines
 # with a screen: Macs (~/Library/Fonts) and, from WSL, the Windows user.
 # Follows the latest release (looked up weekly, like `releases`); repo@tag pins
 # one. The archive is .7z, which chezmoi can't unpack, so a script does it.
