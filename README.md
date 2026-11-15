@@ -41,3 +41,7 @@ shortcut with one Run Shell Script action, `~/.local/bin/pkshot`, then add a
 keyboard shortcut in its details (e.g. Ctrl+Option+Cmd+4). The first run needs
 Shortcuts → Settings → Advanced → Allow Running Scripts, and Screen Recording
 permission for Shortcuts.
+
+`linktest` prints sample links (parens, markdown, Chinese text, OSC 8, a
+wrapped URL) to check how a terminal or multiplexer detects and opens them.
+Each opens example.com with `?case=N`, so the address bar shows what was taken.

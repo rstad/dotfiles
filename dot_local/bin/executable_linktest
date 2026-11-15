@@ -1,0 +1,29 @@
+#!/bin/sh
+# Print sample links to check how a terminal (WezTerm, zellij, herdr) detects
+# and opens them. Each opens example.com with ?case=N, so the browser's address
+# bar shows exactly what the terminal grabbed (e.g. a stray ")" or ".").
+e='https://example.com/'
+osc8() { printf '\033]8;;%s\033\\%s\033]8;;\033\\' "$1" "$2"; }
+
+cat <<EOF
+ 1  bare:                ${e}?case=1
+ 2  in parens, spaced:   ( ${e}?case=2 )
+ 3  in parens, tight:    (${e}?case=3)
+ 4  markdown:            [docs](${e}?case=4)
+ 5  end of sentence:     See ${e}?case=5.
+ 6  comma after:         ${e}?case=6, then text
+ 7  balanced parens:     ${e}?case=7_(note)
+ 8  balanced in parens:  (see ${e}?case=8_(note))
+ 9  query and fragment:  ${e}?case=9&b=c#frag
+10  quoted:              "${e}?case=10"
+11  next to Chinese:     链接${e}?case=11，后面的文字
+12  email:               someone@example.com
+EOF
+printf '13  OSC 8 hyperlink:     '; osc8 "${e}?case=13" 'click this text'; echo
+printf '14  OSC 8 over a URL:    '; osc8 "${e}?case=14-real" "${e}?case=14-shown"; echo
+echo "15  wraps at the edge:   ${e}?case=15&padding=$(printf 'x%.0s' $(seq 1 150))"
+cat <<'EOF'
+
+Expect: 1-11 open exactly ?case=N (with 7-8 keeping "_(note)", 9 keeping
+"&b=c#frag"); 12 opens mail; 13 opens case=13; 14 opens case=14-real.
+EOF

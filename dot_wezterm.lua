@@ -96,7 +96,7 @@ end
 -- counts as a word character (链接https://...，后面 would otherwise be taken
 -- whole). Cost: a URL with a raw Chinese path stops where the Chinese starts.
 -- [=[ ]=] quoting because the regex contains "]]". Test changes with rg (same
--- regex engine) against the output of ~/bin/linktest or similar.
+-- regex engine): linktest | rg -o '<regex>'
 local not_cjk = [=[\p{Han}\x{3000}-\x{303F}\x{FF00}-\x{FFEF}]=]
 config.hyperlink_rules = {
   { regex = [=[[a-zA-Z][a-zA-Z0-9+.-]*://(?:[^\s()<>\[\]]=] .. not_cjk .. [=[]|\([^\s()<>]=] .. not_cjk .. [=[]*\))*(?:[^\s()<>\[\].,;:!?'"]=] .. not_cjk .. [=[]|\([^\s()<>]=] .. not_cjk .. [=[]*\))]=], format = '$0' },
