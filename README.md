@@ -22,6 +22,10 @@ Managed with [chezmoi](https://chezmoi.io). New machine:
   or as release binaries in `~/.local/bin`, refreshed weekly
   (`.chezmoiexternal.toml.tmpl`). Upgrading what apt and brew installed is
   left to them.
+- The terminal font (Sarasa Term SC, `font` in `.chezmoidata.toml`) goes on
+  the machines with a screen: `~/Library/Fonts` on Macs, and from WSL into the
+  Windows user's fonts (no admin needed). It follows the latest release; a new
+  one is picked up within a week. Restart the terminal afterwards.
 
 A personal email is stored and used as `3325739+rstad@users.noreply.github.com`.
 Change the email with `chezmoi init --prompt`.

@@ -1,0 +1,77 @@
+{{- /* The terminal font from `font` in .chezmoidata.toml. Macs get it in
+       ~/Library/Fonts; WSL installs it for the Windows user, where WezTerm and
+       the zellij window run. Headless Linux hosts skip it: the font is drawn by
+       the terminal you sit at. Re-runs when the release tag or settings change;
+       if it fails, the next apply retries. */ -}}
+{{- $wsl := and (eq .chezmoi.os "linux") (contains "microsoft" (lower .chezmoi.kernel.osrelease)) -}}
+{{- if or (eq .chezmoi.os "darwin") $wsl -}}
+{{- $repo := .font.repo -}}
+{{- $tag := "" -}}
+{{- if contains "@" $repo -}}
+{{-   $tag = splitList "@" $repo | last -}}
+{{-   $repo = splitList "@" $repo | first -}}
+{{- else -}}
+{{-   $tag = output "sh" "-c" (includeTemplate "latest-release.sh" .) "sh" $repo | trim -}}
+{{- end -}}
+{{- if $tag -}}
+{{- $ver := trimPrefix "v" $tag -}}
+{{- $archive := .font.archive | replace "{hint}" (ternary "" "-Unhinted" $wsl) | replace "{ver}" $ver -}}
+#!/bin/sh
+# {{ .font.family }} {{ $tag }}, settings {{ .font | toJson | sha256sum | trunc 12 }}
+set -e
+tmp=$(mktemp -d)
+cleanup() {
+    rm -f "$tmp/font.7z"{{ range .font.files }} "$tmp/{{ index . 0 }}"{{ end }}
+    rmdir "$tmp"
+}
+trap cleanup EXIT
+
+{{- if $wsl }}
+# Unpacking .7z needs bsdtar (libarchive)
+if ! command -v bsdtar > /dev/null; then
+    echo "fonts: installing libarchive-tools for bsdtar" >&2
+    sudo env DEBIAN_FRONTEND=noninteractive apt-get install -y -qq libarchive-tools
+fi
+tar=bsdtar
+{{- else }}
+tar=/usr/bin/tar  # macOS tar is bsdtar, which unpacks .7z
+{{- end }}
+
+echo "fonts: downloading {{ $archive }}" >&2
+curl -fsSL --retry 2 -o "$tmp/font.7z" \
+    "https://github.com/{{ $repo }}/releases/download/{{ $tag }}/{{ $archive }}"
+$tar -xf "$tmp/font.7z" -C "$tmp"{{ range .font.files }} {{ index . 0 }}{{ end }}
+
+{{- if not $wsl }}
+
+mkdir -p ~/Library/Fonts
+{{- range .font.files }}
+cp "$tmp/{{ index . 0 }}" ~/Library/Fonts/
+{{- end }}
+echo "fonts: installed {{ .font.family }} {{ $tag }}; restart terminals to use it" >&2
+{{- else }}
+
+# Per-user fonts: %LOCALAPPDATA%\Microsoft\Windows\Fonts, registered under HKCU
+# (no admin needed). Windows locks a font file while a program uses it, so each
+# release gets its own file names (-<version>.ttf) and the registry is pointed
+# at them. Older versions are deleted when nothing holds them any more.
+localappdata=$(cd /mnt/c && cmd.exe /c 'echo %LOCALAPPDATA%' 2> /dev/null | tr -d '\r')
+if [ -z "$localappdata" ]; then
+    echo "fonts: could not find %LOCALAPPDATA%; will retry on the next apply" >&2
+    exit 1
+fi
+dir=$(wslpath "$localappdata")/Microsoft/Windows/Fonts
+mkdir -p "$dir"
+key='HKCU\Software\Microsoft\Windows NT\CurrentVersion\Fonts'
+{{- range .font.files }}
+{{- $versioned := printf "%s-%s.ttf" (index . 0 | trimSuffix ".ttf") $ver }}
+cp "$tmp/{{ index . 0 }}" "$dir/{{ $versioned }}"
+reg.exe add "$key" /v "{{ index . 1 }} (TrueType)" /t REG_SZ /d "$localappdata\\Microsoft\\Windows\\Fonts\\{{ $versioned }}" /f > /dev/null
+for old in "$dir/{{ index . 0 | trimSuffix ".ttf" }}"-*.ttf; do
+    [ "$old" = "$dir/{{ $versioned }}" ] || [ ! -e "$old" ] || rm -f "$old" 2> /dev/null || true
+done
+{{- end }}
+echo "fonts: installed {{ .font.family }} {{ $tag }} for the Windows user; restart WezTerm (or sign out and in) to use it" >&2
+{{- end }}
+{{- end }}
+{{- end }}

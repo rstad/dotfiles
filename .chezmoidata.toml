@@ -81,3 +81,20 @@ repoFiles = [
     brew = ["tmux", "tree", "eza"]
     # WSL hosts with 1Password only: bridges the Windows ssh agent
     wsl1password = ["socat"]
+
+# Terminal font, installed by run_onchange_after_install-fonts on the machines
+# with a screen: Macs (~/Library/Fonts) and, from WSL, the Windows user.
+# Follows the latest release (looked up weekly, like `releases`); repo@tag pins
+# one. The archive is .7z, which chezmoi can't unpack, so a script does it.
+[font]
+    repo = "be5invis/Sarasa-Gothic"
+    family = "Sarasa Term SC"
+    # {hint} is "" (hinted, for Windows) or "-Unhinted" (Macs ignore hinting)
+    archive = "SarasaTermSC-TTF{hint}-{ver}.7z"
+    # file in the archive, full font name (Windows registers fonts by it)
+    files = [
+        ["SarasaTermSC-Regular.ttf",    "Sarasa Term SC"],
+        ["SarasaTermSC-Bold.ttf",       "Sarasa Term SC Bold"],
+        ["SarasaTermSC-Italic.ttf",     "Sarasa Term SC Italic"],
+        ["SarasaTermSC-BoldItalic.ttf", "Sarasa Term SC Bold Italic"],
+    ]
