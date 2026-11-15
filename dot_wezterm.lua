@@ -93,4 +93,8 @@ config.hyperlink_rules = {
   { regex = [=[\b\w+@[\w-]+(\.[\w-]+)+\b]=], format = 'mailto:$0' },
 }
 
+-- Kitty graphics (off by default). zellij >= 0.45 passes it through, and it
+-- scrolls cleanly there, unlike sixel (slow, leaves artifacts). Used by chawan.
+config.enable_kitty_graphics = true
+
 return config
