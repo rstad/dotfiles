@@ -326,8 +326,10 @@ web_client {
  
 // Choose the base input mode of zellij.
 // Default: normal
-// 
-// default_mode "locked"
+// Start locked (Ctrl g unlocks), as the unlock-first preset would. Set here
+// rather than with keybinds preset="unlock-first": the bindings above replace
+// the preset's anyway (clear-defaults=true), and the mode is all it added.
+default_mode "locked"
  
 // Choose the path to the default shell that zellij will use for opening new panes
 // Default: $SHELL
@@ -660,3 +662,37 @@ web_client {
 //   - "off" (do not forward notifications to the host terminal)
 // 
 // host_notification_protocol "auto"
+
+{{- /* The zellij desktop window (`zellij terminal`). Macs only: the Linux
+       hosts have no screen. Font from `font` in .chezmoidata.toml, colors are
+       idleToes as in .wezterm.lua (iTerm2-Color-Schemes "Idle Toes"). */}}
+{{- if eq .chezmoi.os "darwin" }}
+
+// Options for the Zellij terminal window (`zellij terminal`); see the
+// commented reference in `zellij setup --dump-config` for the rest
+terminal {
+    font {{ .font.family | quote }}
+    font_size 14
+    theme {
+        foreground "#ffffff"
+        background "#323232"
+        cursor "#d6d6d6"
+        black "#323232"
+        red "#d25252"
+        green "#7fe173"
+        yellow "#ffc66d"
+        blue "#4099ff"
+        magenta "#f680ff"
+        cyan "#bed6ff"
+        white "#eeeeec"
+        bright_black "#606060"
+        bright_red "#f07070"
+        bright_green "#9dff91"
+        bright_yellow "#ffe48b"
+        bright_blue "#5eb7f7"
+        bright_magenta "#ff9dff"
+        bright_cyan "#dcf4ff"
+        bright_white "#ffffff"
+    }
+}
+{{- end }}
