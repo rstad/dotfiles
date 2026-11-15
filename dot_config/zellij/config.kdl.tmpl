@@ -668,6 +668,15 @@ default_mode "locked"
        idleToes as in .wezterm.lua (iTerm2-Color-Schemes "Idle Toes"). */}}
 {{- if eq .chezmoi.os "darwin" }}
 
+// Ctrl+click goes to the focused pane's program when it takes the mouse (herdr
+// opens links with Ctrl+click); elsewhere it still draws a floating pane.
+// Mouse bindings are new in zellij 0.46, so for now this is Mac-only.
+mousebinds {
+    shared {
+        bind "Ctrl Left" on="content" app_first=true { DrawFloatingPane; }
+    }
+}
+
 // Options for the Zellij terminal window (`zellij terminal`); see the
 // commented reference in `zellij setup --dump-config` for the rest
 terminal {
