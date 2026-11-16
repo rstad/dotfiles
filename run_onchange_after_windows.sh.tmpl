@@ -1,7 +1,8 @@
 {{- if and (eq .chezmoi.os "linux") (contains "microsoft" (lower .chezmoi.kernel.osrelease)) -}}
 #!/bin/sh
-# WSL: WezTerm and ssh.exe run on the Windows side, so copy their configs to
-# the Windows home. Re-runs when either changes:
+# WSL: WezTerm, ssh.exe and zellij run on the Windows side, so copy their
+# configs there. Re-runs when any of them changes (zellij's is rendered into
+# this script below, so a change to it changes the script):
 #   {{ include "dot_wezterm.lua" | sha256sum }}
 #   {{ include "private_dot_ssh/private_config" | sha256sum }}
 winhome=$(cd /mnt/c && cmd.exe /c 'echo %USERPROFILE%' 2>/dev/null | tr -d '\r')
@@ -34,4 +35,19 @@ fi
         -e '/^Match host .* !exec /{s/^Match host \([^ ]*\) .*/Host \1/;s/,/ /g;}' \
         "{{ .chezmoi.sourceDir }}/private_dot_ssh/private_config"
 } > "$cfg"
+
+# Native Windows zellij (installed by hand, e.g. the .msi) reads
+# %APPDATA%\Zellij\config\config.kdl. Same template as ~/.config/zellij,
+# plus the window settings and wsl.exe as the pane shell.
+appdata=$(cd /mnt/c && cmd.exe /c 'echo %APPDATA%' 2>/dev/null | tr -d '\r')
+case $appdata in
+    '' | %*) echo "windows: could not find %APPDATA%, skipping the zellij config" >&2 ;;
+    *)
+        zdir=$(wslpath "$appdata")/Zellij/config
+        mkdir -p "$zdir"
+        cat > "$zdir/config.kdl" <<'ZELLIJ_CONFIG_END'
+{{ includeTemplate "dot_config/zellij/config.kdl.tmpl" (merge (dict "zellijWindows" true) .) }}
+ZELLIJ_CONFIG_END
+        ;;
+esac
 {{- end }}

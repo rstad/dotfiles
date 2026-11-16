@@ -663,14 +663,24 @@ default_mode "locked"
 // 
 // host_notification_protocol "auto"
 
-{{- /* The zellij desktop window (`zellij terminal`). Macs only: the Linux
-       hosts have no screen. Font from `font` in .chezmoidata.toml, colors are
-       idleToes as in .wezterm.lua (iTerm2-Color-Schemes "Idle Toes"). */}}
-{{- if eq .chezmoi.os "darwin" }}
+{{- /* The zellij desktop window (`zellij terminal`): Macs, and the native
+       Windows zellij, whose copy of this file the WSL script
+       run_onchange_after_windows.sh.tmpl renders with zellijWindows set.
+       The Linux hosts have no screen. Font from `font` in .chezmoidata.toml,
+       colors are idleToes as in .wezterm.lua (iTerm2-Color-Schemes "Idle Toes"). */}}
+{{- $windows := hasKey . "zellijWindows" }}
+{{- if or (eq .chezmoi.os "darwin") $windows }}
+{{- if $windows }}
+
+// Windows: panes run the default WSL distro's login shell, starting in the
+// Windows folder zellij was opened from
+default_shell "wsl.exe"
+{{- end }}
 
 // Ctrl+click goes to the focused pane's program when it takes the mouse (herdr
 // opens links with Ctrl+click); elsewhere it still draws a floating pane.
-// Mouse bindings are new in zellij 0.46, so for now this is Mac-only.
+// Mouse bindings are new in zellij 0.46, so for now only the hosts with a
+// window get them (Macs, Windows).
 mousebinds {
     shared {
         bind "Ctrl Left" on="content" app_first=true { DrawFloatingPane; }
