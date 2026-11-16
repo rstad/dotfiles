@@ -22,8 +22,10 @@ EOF
 printf '13  OSC 8 hyperlink:     '; osc8 "${e}?case=13" 'click this text'; echo
 printf '14  OSC 8 over a URL:    '; osc8 "${e}?case=14-real" "${e}?case=14-shown"; echo
 echo "15  wraps at the edge:   ${e}?case=15&padding=$(printf 'x%.0s' $(seq 1 150))"
+echo "16  raw Chinese in URL:  见 ${e}?case=16_字体_(消歧义)。后面的文字"
 cat <<'EOF'
 
 Expect: 1-11 open exactly ?case=N (with 7-8 keeping "_(note)", 9 keeping
-"&b=c#frag"); 12 opens mail; 13 opens case=13; 14 opens case=14-real.
+"&b=c#frag"); 12 opens mail; 13 opens case=13; 14 opens case=14-real;
+15 opens the whole URL; 16 opens ?case=16_字体_(消歧义), without the "。".
 EOF

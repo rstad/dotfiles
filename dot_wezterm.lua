@@ -91,13 +91,16 @@ end
 -- goes to them). The built-in rule keeps a trailing ")", which breaks
 -- markdown-style text(https://...). This one allows matched (...) pairs, as in
 -- Wikipedia links, but never ends on an unmatched ")" or trailing punctuation.
--- Chinese text: a URL stops at Han characters and CJK/fullwidth punctuation
--- (U+3000-303F, U+FF00-FFEF), and the scheme is ASCII with no \b, since Han
--- counts as a word character (链接https://...，后面 would otherwise be taken
--- whole). Cost: a URL with a raw Chinese path stops where the Chinese starts.
+-- Chinese text: a URL stops at CJK/fullwidth punctuation (U+3000-303F,
+-- U+FF00-FFEF: ，。、）「 ...), so https://...，后面 ends at the comma, but Han
+-- characters stay part of it, so a raw Chinese path such as
+-- https://zh.wikipedia.org/wiki/字体_(消歧义) is taken whole. The scheme is
+-- ASCII with no \b, since Han counts as a word character (链接https://... would
+-- otherwise not match). Cost: Chinese text glued straight onto the end of a
+-- URL, with no punctuation or space between, is taken as part of it.
 -- [=[ ]=] quoting because the regex contains "]]". Test changes with rg (same
 -- regex engine): linktest | rg -o '<regex>'
-local not_cjk = [=[\p{Han}\x{3000}-\x{303F}\x{FF00}-\x{FFEF}]=]
+local not_cjk = [=[\x{3000}-\x{303F}\x{FF00}-\x{FFEF}]=]
 config.hyperlink_rules = {
   { regex = [=[[a-zA-Z][a-zA-Z0-9+.-]*://(?:[^\s()<>\[\]]=] .. not_cjk .. [=[]|\([^\s()<>]=] .. not_cjk .. [=[]*\))*(?:[^\s()<>\[\].,;:!?'"]=] .. not_cjk .. [=[]|\([^\s()<>]=] .. not_cjk .. [=[]*\))]=], format = '$0' },
   { regex = [=[\b\w+@[\w-]+(\.[\w-]+)+\b]=], format = 'mailto:$0' },
