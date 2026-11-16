@@ -2,8 +2,12 @@
        and again whenever the list changes; if it fails, the next update retries. */ -}}
 {{- if and (eq .chezmoi.os "linux") (lookPath "apt-get") -}}
 {{- $apt := .packages.apt -}}
+{{- $wsl := contains "microsoft" (lower .chezmoi.kernel.osrelease) -}}
+{{- if $wsl -}}
+{{-   $apt = concat $apt .packages.wsl -}}
+{{- end -}}
 {{- /* WSL with 1Password: socat bridges the Windows agent (see .zshrc) */ -}}
-{{- if and (contains "microsoft" (lower .chezmoi.kernel.osrelease)) (eq .passwordManager "1password") -}}
+{{- if and $wsl (eq .passwordManager "1password") -}}
 {{-   $apt = concat $apt .packages.wsl1password -}}
 {{- end -}}
 #!/bin/sh
@@ -42,6 +46,14 @@ ln -sfn /usr/bin/fdfind ~/.local/bin/fd
 ln -sfn /usr/bin/batcat ~/.local/bin/bat
 mkdir -p ~/.local/share/man/man1
 ln -sfn /usr/share/man/man1/batcat.1.gz ~/.local/share/man/man1/bat.1.gz
+{{- if $wsl }}
+
+# WSL has no xdg-open, which herdr (Ctrl+click) and others call to open links.
+# wslview (wslu) opens them in the Windows default browser instead.
+if [ ! -e /usr/bin/xdg-open ]; then
+    ln -sfn /usr/bin/wslview ~/.local/bin/xdg-open
+fi
+{{- end }}
 {{- else if eq .chezmoi.os "darwin" -}}
 {{- $formulae := .packages.brew -}}
 #!/bin/sh

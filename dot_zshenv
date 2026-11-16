@@ -13,3 +13,8 @@ if [[ $OSTYPE == darwin* ]]; then
 fi
 
 path=(~/bin ~/.local/bin $path)
+
+# WSL: open URLs in the Windows browser (wslview from wslu, installed by chezmoi)
+if [[ -n $WSL_DISTRO_NAME && -z $BROWSER ]]; then
+  export BROWSER=wslview
+fi

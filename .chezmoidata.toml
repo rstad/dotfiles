@@ -79,6 +79,8 @@ repoFiles = [
            "ripgrep", "fd-find", "bat", "zoxide", "eza", "git-delta"]
     # No Mac release binaries for these
     brew = ["tmux", "tree", "eza"]
+    # WSL hosts: wslview opens URLs in the Windows browser (xdg-open and $BROWSER)
+    wsl = ["wslu"]
     # WSL hosts with 1Password only: bridges the Windows ssh agent
     wsl1password = ["socat"]
 
