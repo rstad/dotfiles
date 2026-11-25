@@ -1,0 +1,17 @@
+{{- /* Work laptops (work email on a Mac or WSL) layer settings from a private
+       work repo, cloned by hand to ~/.config/dotfiles-work, over these
+       dotfiles: .zshrc sources its zshrc and .gitconfig includes its
+       gitconfig-darwin or gitconfig-wsl. The repo's name stays out of this
+       public repo. On every apply this pulls it; it never deletes anything,
+       and a failed pull only warns. Elsewhere the script is empty and skipped. */ -}}
+{{- $wsl := and (eq .chezmoi.os "linux") (contains "microsoft" (lower .chezmoi.kernel.osrelease)) -}}
+{{- if and (not .personal) (or (eq .chezmoi.os "darwin") $wsl) -}}
+#!/bin/sh
+dir="$HOME/.config/dotfiles-work"
+if [ ! -d "$dir/.git" ]; then
+    echo "work layer: $dir isn't cloned yet; clone the work dotfiles repo there to use it" >&2
+    exit 0
+fi
+git -C "$dir" pull --ff-only --quiet || echo "work layer: pull failed in $dir, using what's there" >&2
+exit 0
+{{- end }}

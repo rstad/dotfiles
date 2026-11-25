@@ -36,5 +36,12 @@
 	rebase = false
 [init]
 	defaultBranch = main
+{{- /* Work laptops (work email on a Mac or WSL) include the private work
+       layer's gitconfig for their platform; git skips a missing file */}}
+{{- $wsl := and (eq .chezmoi.os "linux") (contains "microsoft" (lower .chezmoi.kernel.osrelease)) }}
+{{- if and (not .personal) (or (eq .chezmoi.os "darwin") $wsl) }}
+[include]
+	path = ~/.config/dotfiles-work/gitconfig-{{ ternary "wsl" "darwin" $wsl }}
+{{- end }}
 [include]
 	path = ~/.gitconfig.local

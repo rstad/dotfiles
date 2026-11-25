@@ -5,6 +5,25 @@ if command -v vim >/dev/null; then export EDITOR=vim; else export EDITOR=vi; fi
 export VISUAL=$EDITOR
 [[ -n $LANG ]] || export LANG=en_US.UTF-8
 
+# Language toolchains, each only where it's installed
+[[ -f ~/.cargo/env ]] && source ~/.cargo/env
+if [[ -d ~/.pyenv ]]; then
+  export PYENV_ROOT=~/.pyenv
+  [[ -d $PYENV_ROOT/bin ]] && path=($PYENV_ROOT/bin $path)
+fi
+# --no-rehash keeps startup fast; run `pyenv rehash` after pip installs a command
+if command -v pyenv >/dev/null; then eval "$(pyenv init - --no-rehash zsh)"; fi
+# nvm without its slow `nvm use` at startup: put the newest installed node on
+# PATH directly. The nvm command still works for switching versions.
+if [[ -s ~/.nvm/nvm.sh ]]; then
+  export NVM_DIR=~/.nvm
+  source $NVM_DIR/nvm.sh --no-use
+  [[ -s $NVM_DIR/bash_completion ]] && source $NVM_DIR/bash_completion
+  _nvm_bins=($NVM_DIR/versions/node/v*/bin(Nn))
+  (( $#_nvm_bins )) && path=($_nvm_bins[-1] $path)
+  unset _nvm_bins
+fi
+
 # Inside ssh, point at the stable symlink to the forwarded agent that
 # ~/.ssh/rc maintains, so long-lived tmux/zellij sessions survive reconnects.
 # Locally, use the {{ .passwordManager }} ssh agent.
@@ -72,9 +91,14 @@ setopt histignorealldups sharehistory extendedhistory histignorespace
 
 # Completion. ~/.local/share/zsh/site-functions holds the ones
 # run_after_zsh-completions.sh generates for the release binaries.
+# Docker Desktop keeps its completions in ~/.docker/completions.
 fpath=(~/.local/share/zsh/site-functions $fpath)
+[[ -d ~/.docker/completions ]] && fpath=(~/.docker/completions $fpath)
 autoload -Uz compinit
 compinit
+if command -v pipx >/dev/null && command -v register-python-argcomplete >/dev/null; then
+  eval "$(register-python-argcomplete pipx)"
+fi
 zstyle ':completion:*' menu select
 zstyle ':completion:*' group-name ''
 zstyle ':completion:*' format 'Completing %d'
@@ -98,6 +122,8 @@ if command -v eza >/dev/null; then
 else
   alias ll='ls -l' la='ls -la'
 fi
+# nb <branch>: update main and start a new branch from it
+alias nb='git switch main && git pull && git switch -c '
 
 # fzf: Ctrl-T inserts a file, Alt-C cds, and Ctrl-R searches history where
 # atuin (below) doesn't take it; file lists come from fd, so .gitignored
@@ -139,5 +165,8 @@ else
   PROMPT='%F{blue}%~%f %# '
 fi
 
-# Machine-specific (work stuff, secrets) goes here, not in the public repo
+# Work laptops: shared work settings from a private repo cloned by hand to
+# ~/.config/dotfiles-work (see run_after_work-layer.sh.tmpl)
+if [[ -f ~/.config/dotfiles-work/zshrc ]]; then source ~/.config/dotfiles-work/zshrc; fi
+# Machine-specific (secrets, one-off tweaks) goes here, not in the public repo
 if [[ -f ~/.zshrc.local ]]; then source ~/.zshrc.local; fi
