@@ -17,5 +17,15 @@ Host atom east minecraft ro west blox1 blox2 macmini t420s
     User russell
     ForwardAgent yes
 
+# GitHub as the personal account (rstad), whichever other keys the agent
+# holds: offer only rstad's keys (Bitwarden on the personal laptop, the rstad
+# key in 1Password on the work laptop). .gitconfig sends rstad/* repos here.
+Host github-personal
+    HostName github.com
+    User git
+    IdentityFile ~/.ssh/github-personal-bitwarden.pub
+    IdentityFile ~/.ssh/github-personal-1password.pub
+    IdentitiesOnly yes
+
 Host *
     ServerAliveInterval 60

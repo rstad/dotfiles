@@ -5,6 +5,8 @@
 # this script below, so a change to it changes the script):
 #   {{ include "dot_wezterm.lua" | sha256sum }}
 #   {{ include "private_dot_ssh/private_config" | sha256sum }}
+#   {{ include "private_dot_ssh/github-personal-bitwarden.pub" | sha256sum }}
+#   {{ include "private_dot_ssh/github-personal-1password.pub" | sha256sum }}
 winhome=$(cd /mnt/c && cmd.exe /c 'echo %USERPROFILE%' 2>/dev/null | tr -d '\r')
 if [ -z "$winhome" ]; then
     echo "windows: could not find the Windows home, skipping" >&2
@@ -35,6 +37,8 @@ fi
         -e '/^Match host .* !exec /{s/^Match host \([^ ]*\) .*/Host \1/;s/,/ /g;}' \
         "{{ .chezmoi.sourceDir }}/private_dot_ssh/private_config"
 } > "$cfg"
+# public keys named by IdentityFile in that config
+cp "{{ .chezmoi.sourceDir }}"/private_dot_ssh/github-personal-*.pub "$winhome/.ssh/"
 
 # Native Windows zellij (installed by hand, e.g. the .msi) reads
 # %APPDATA%\Zellij\config\config.kdl. Same template as ~/.config/zellij,

@@ -25,6 +25,12 @@
 	helper =
 	helper = !{{ $gh }} auth git-credential
 {{- end }}
+[url "git@github-personal:{{ .github.personal }}/"]
+	# Over ssh, the personal account's repos use the personal key (see
+	# ~/.ssh/config), even when the agent offers a work key first. HTTPS
+	# remotes are untouched and keep using gh.
+	insteadOf = git@github.com:{{ .github.personal }}/
+	insteadOf = ssh://git@github.com/{{ .github.personal }}/
 [core]
 	# delta where it's installed, otherwise git's usual less
 	pager = command -v delta >/dev/null && exec delta || exec less
